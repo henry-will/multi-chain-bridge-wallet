@@ -47,17 +47,25 @@ describe("ServiceBridge", function () {
         });
     });
 
-    describe("BridgePair", function () {
+    describe("BridgePair In Wallet", function () {
         it("should be empty when deployed", async function () {
             const { bridge } = await loadFixture(deployServiceBridgeFixture);
             const bridgePairs = await bridge.getAllBridgePairs();
             expect(0).to.equals(bridgePairs.length);
         });
-        it("should be add with parent and child", async function () {
+        it("should be deploy brige contract and token contracts", async function () {
+        });
+        it("should be add with parent and child in network", async function () {
         });
         it("should be registered the token infomations of bridge", async function () {
         });
         it("should be list the parent and child tokens of a specific network", async function () {
+        });
+        it("Pepper: should be check CRUD permission of networks, bridges and tokens", async function () {
+        });
+        it("Optional: should be list tokens with klay", async function () {
+        });
+        it("Optional: should be add layer 3 network and game tokens", async function () {
         });
     });
 });
