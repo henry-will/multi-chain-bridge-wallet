@@ -12,5 +12,5 @@ struct BridgePair {
 struct Bridge {
     string name;
     address bridgeAddress;
-    Token[] registeredTokens;
+    Token registeredTokens;
 }
