@@ -8,10 +8,10 @@ describe("ServiceNetworkKey", function () {
         // Contracts are deployed using the first signer/account by default
         const [owner, otherAccount] = await ethers.getSigners();
 
-        const ServiceNetworkKey = await ethers.getContractFactory("ServiceNetworkKey");
-        const networkKey = await ServiceNetworkKey.deploy();
+        const networkKeyModel = await ethers.getContractFactory("NetworkKeyModel");
+        const networkKey = await networkKeyModel.deploy();
 
-        return { ServiceNetworkKey, networkKey, owner, otherAccount };
+        return { networkKeyModel, networkKey, owner, otherAccount };
     }
 
     describe("Deployed Contract", function () {

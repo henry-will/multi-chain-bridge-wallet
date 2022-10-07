@@ -1,11 +1,12 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.17 <0.9.0;
 
-import "./NetworkModel.sol";
-import {IterableNetworkMap, StringUtil} from "./IterableNetworkMap.sol";
-import "./ServiceNetworkKey.sol";
+import "../models/TokenModel.sol";
+import "../models/NetworkModel.sol";
+import "../models/NetworkKeyModel.sol";
+import "../libs/IterableNetworkMap.sol";
 
-contract ServiceNetwork is ServiceToken, ServiceNetworkKey {
+contract ServiceNetwork is NetworkKeyModel {
     using IterableNetworkMap for IterableNetworkMap.Map;
     IterableNetworkMap.Map private networks;
 

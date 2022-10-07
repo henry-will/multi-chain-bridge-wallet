@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./NetworkModel.sol";
+import "../models/NetworkModel.sol";
 import "./StringUtil.sol";
 
 library IterableNetworkMap {
@@ -82,7 +82,11 @@ library IterableNetworkMap {
         return lastKey;
     }
 
-    function getValues(Map storage map) public view returns (Network[] memory) {
+    function getValues(Map storage map)
+        public
+        view
+        returns (Network[] memory)
+    {
         uint256 totalSize = map.keys.length;
         Network[] memory allNetworks = new Network[](totalSize);
         for (uint256 index = 0; index < totalSize; index++) {

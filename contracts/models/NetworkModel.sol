@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./ServiceToken.sol";
+import "./TokenModel.sol";
 
 /// @notice Network is a information of chain node
 struct Network {
@@ -12,7 +12,7 @@ struct Network {
     string rpcUrl;
     uint256 networkId;
     NativeCurrency nativeCurrency;
-    ServiceToken token;
+    Token token;
     string explorer;
     string description;
     string website;
