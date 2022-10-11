@@ -14,6 +14,7 @@ enum TokenType {
 }
 
 struct Token {
+    string key;
     string name;
     string symbol;
     address tokenAddress;
