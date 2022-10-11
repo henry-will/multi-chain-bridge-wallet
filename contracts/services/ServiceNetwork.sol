@@ -19,9 +19,12 @@ contract ServiceNetwork is NetworkKeyModel {
         string memory tokenName,
         string memory tokenSymbol,
         uint256 tokenDecimals
-    ) public payable returns (bool) {
+    ) 
+        public payable 
+        returns (bool) 
+    {
         string memory key = getKey(chainId, shortName);
-        require(!networks.exist(key), string.concat(key, " already exists"));
+        require(!networks.exist(key), string.concat(key, "already exists"));
 
         Network memory network;
         network.key = key;
@@ -38,7 +41,9 @@ contract ServiceNetwork is NetworkKeyModel {
         return true;
     }
 
-    function deleteNetwork(string memory key) public {
+    function deleteNetwork(string memory key) 
+        public 
+    {
         networks.remove(key);
     }
 
@@ -49,7 +54,9 @@ contract ServiceNetwork is NetworkKeyModel {
         string memory name,
         string memory rpcUrl,
         uint256 networkId
-    ) public {
+    ) 
+        public 
+    {
         string memory newKey = getKey(chainId, shortName);
         require(
             StringUtil.stringCompare(key, newKey),
@@ -68,18 +75,23 @@ contract ServiceNetwork is NetworkKeyModel {
     }
 
     function getNetwork(string memory key)
-        public
-        view
+        public view
         returns (Network memory)
     {
         return networks.get(key);
     }
 
-    function getAllNetworks() public view returns (Network[] memory) {
+    function getAllNetworks() 
+        public view 
+        returns (Network[] memory) 
+    {
         return networks.getValues();
     }
 
-    function getActiveNetworks() public view returns (Network[] memory) {
+    function getActiveNetworks() 
+        public view 
+        returns (Network[] memory) 
+    {
         Network[] memory activeNetworks = new Network[](networks.size());
         uint256 activeIndex = 0;
         for (uint256 index = 0; index < networks.size(); index++) {
@@ -95,18 +107,17 @@ contract ServiceNetwork is NetworkKeyModel {
         return activeNetworks;
     }
 
-    function setNativeCurrency(
-        Network memory network,
-        string memory name,
-        string memory symbol,
-        uint256 decimals
-    ) private pure {
+    function setNativeCurrency( Network memory network, string memory name, string memory symbol, uint256 decimals )
+        private pure 
+    {
         network.nativeCurrency.name = name;
         network.nativeCurrency.symbol = symbol;
         network.nativeCurrency.decimals = decimals;
     }
 
-    function initDetail(Network memory network) private pure {
+    function initDetail(Network memory network) 
+        private pure 
+    {
         network.detail.activated = false;
         network.detail.show = false;
         network.detail.displayOrder = 0;
