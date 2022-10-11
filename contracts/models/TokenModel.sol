@@ -14,10 +14,10 @@ enum TokenType {
 }
 
 struct Token {
-    address tokenAddress;
-    string tokenType;
     string name;
     string symbol;
+    address tokenAddress;
+    string tokenType;
     uint256 decimals;
     App apps;
 }
