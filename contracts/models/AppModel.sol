@@ -12,6 +12,7 @@ enum AppType {
 }
 
 struct App {
+    string key;
     string name;
     string appType;
     string webUrl;
