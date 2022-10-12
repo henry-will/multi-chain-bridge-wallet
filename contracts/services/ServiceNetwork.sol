@@ -24,7 +24,7 @@ contract ServiceNetwork is NetworkKeyModel {
         returns (bool) 
     {
         string memory key = getKey(chainId, shortName);
-        require(!networks.exist(key), string.concat(key, "already exists"));
+        require(!networks.exist(key), string.concat(key, " already exists"));
 
         Network memory network;
         network.key = key;

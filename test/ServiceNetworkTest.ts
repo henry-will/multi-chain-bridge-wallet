@@ -46,12 +46,12 @@ describe("ServiceNetwork", function () {
             // console.log("testNetwork is ", testNetwork);
 
             const allNetworks = await network.getAllNetworks();
-            // console.log("Networks is ", allNetworks);
+            // console.log("All Networks is ", allNetworks);
             expect(1).to.equals(allNetworks.length);
             expect("123:test").to.equals(allNetworks[0].key);
 
             const networks = await network.getActiveNetworks();
-            // console.log("Networks is ", networks);
+            // console.log("Active Networks is ", networks);
             expect(1).to.equals(networks.length);
             expect("").to.equals(networks[0].key);
 
