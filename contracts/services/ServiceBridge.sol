@@ -29,18 +29,6 @@ contract ServiceBridge {
         _key = makeKey( _name, _parentNetworkKey, _childNetworkKey );
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
-        // BridgePair storage bridgePair; 
-
-        // bridgePair.key = _key;
-        // bridgePair.name = _name;
-        // bridgePair.parentNetworkKey = _parentNetworkKey; 
-        // bridgePair.parentBridgeAddress = _parentBridgeAddress; 
-        // bridgePair.parentBridgeTokenSize = 0; 
-        // bridgePair.childNetworkKey = _childNetworkKey; 
-        // bridgePair.childBridgeAddress = _childBridgeAddress; 
-        // bridgePair.parentBridgeTokenSize = 0; 
-
-
         BridgePair memory bridgePair = BridgePair( 
             _key, _name, 
             _parentNetworkKey, _parentBridgeAddress, new string[](0), 0, 
@@ -57,6 +45,13 @@ contract ServiceBridge {
         string memory _childNetworkKey ) public pure returns (string memory)
     {
         return string.concat( _name, ":", _parentNetworkKey, ":", _childNetworkKey );
+    }
+
+
+    function deleteBridge(string memory key) 
+        public 
+    {
+        bridgePairs.remove(key);
     }
 
 

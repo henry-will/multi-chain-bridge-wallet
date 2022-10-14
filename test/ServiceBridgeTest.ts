@@ -65,6 +65,21 @@ describe("ServiceBridge", function () {
             expect("testBridge1:testParentNetwork:1003:testchildNetwork:1004").to.equals(allBridges[0].key);
             expect("testBridge2:testParentNetwork:1005:testchildNetwork:1006").to.equals(allBridges[1].key);
         });
+        it("deleteBridge", async function () {
+            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            await bridge.addBridgePair( "testBridge1", 
+                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            await bridge.addBridgePair( "testBridge2", 
+                "testParentNetwork:1005", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1006", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            const allBridges1 = await bridge.getAllBridgePairs();
+            expect(2).to.equals(allBridges1.length);
+            await bridge.deleteBridge("testBridge1:testParentNetwork:1003:testchildNetwork:1004");
+            const allBridges2 = await bridge.getAllBridgePairs();
+            expect(1).to.equals(allBridges2.length);
+            expect("testBridge2:testParentNetwork:1005:testchildNetwork:1006").to.equals(allBridges2[0].key);
+        });
     });    
     
     describe("Test TokenList", function () {

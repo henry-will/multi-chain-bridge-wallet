@@ -14,7 +14,7 @@ library IterableBridgeMap {
 
     function get(Map storage map, string memory key) 
         public view 
-        returns (BridgePair storage)
+        returns (BridgePair memory)
     {
         return map.values[key];
     }
@@ -23,7 +23,7 @@ library IterableBridgeMap {
         public view 
         returns (bool) 
     {
-        BridgePair storage bridgePair = get(map, key);
+        BridgePair memory bridgePair = get(map, key);
         return StringUtil.stringCompare(key, bridgePair.key);
     }
 
