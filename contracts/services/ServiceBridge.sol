@@ -17,10 +17,6 @@ contract ServiceBridge {
 
     fallback() external payable {}
 
-    function getAllBridgePairs() external view returns (BridgePair[] memory brigePairs)
-    {
-        return bridgePairs.getValues();
-    }
 
     function addBridgePair(
         string memory _name, 
@@ -63,6 +59,21 @@ contract ServiceBridge {
         return string.concat( _name, ":", _parentNetworkKey, ":", _childNetworkKey );
     }
 
+
+    function getBridge(string memory key)
+        public view
+        returns (BridgePair memory)
+    {
+        return bridgePairs.get(key);
+    }
+
+
+    function getAllBridgePairs() 
+        external view 
+        returns (BridgePair[] memory brigePairs)
+    {
+        return bridgePairs.getValues();
+    }
 
 
     string constant getRegisteredTokenListFunction = "getRegisteredTokenList()";

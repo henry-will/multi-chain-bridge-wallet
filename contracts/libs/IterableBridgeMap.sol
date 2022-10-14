@@ -12,23 +12,31 @@ library IterableBridgeMap {
         mapping(string => bool) inserted;
     }
 
-    function get(Map storage map, string memory key) public view returns (BridgePair storage)
+    function get(Map storage map, string memory key) 
+        public view 
+        returns (BridgePair storage)
     {
         return map.values[key];
     }
 
-    function exist(Map storage map, string memory key) public view returns (bool) 
+    function exist(Map storage map, string memory key) 
+        public view 
+        returns (bool) 
     {
         BridgePair storage bridgePair = get(map, key);
         return StringUtil.stringCompare(key, bridgePair.key);
     }
 
-    function getKeyAtIndex(Map storage map, uint256 index) public view returns (string memory) 
+    function getKeyAtIndex(Map storage map, uint256 index) 
+        public view 
+        returns (string memory) 
     {
         return map.keys[index];
     }
 
-    function size(Map storage map) public view returns (uint256) 
+    function size(Map storage map) 
+        public view 
+        returns (uint256) 
     {
         return map.keys.length;
     }
@@ -72,7 +80,9 @@ library IterableBridgeMap {
         delete map.indexOf[key];
     }
 
-    function removeKey(Map storage map, uint256 keyIndex) private returns (string memory lastKey)
+    function removeKey(Map storage map, uint256 keyIndex) 
+        private 
+        returns (string memory lastKey)
     {
         uint256 lastIndex = map.keys.length - 1;
         lastKey = map.keys[lastIndex];
@@ -82,7 +92,9 @@ library IterableBridgeMap {
         return lastKey;
     }
 
-    function getValues(Map storage map) public view returns (BridgePair[] memory)
+    function getValues(Map storage map) 
+        public view 
+        returns (BridgePair[] memory)
     {
         uint256 totalSize = map.keys.length;
         BridgePair[] memory allBridgePairs = new BridgePair[](

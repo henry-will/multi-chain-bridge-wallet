@@ -49,8 +49,21 @@ describe("ServiceBridge", function () {
             await bridge.addBridgePair( "testBridge", 
                 "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
                 "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
-            const bridges = await bridge.getAllBridgePairs();
-            expect(1).to.equals(bridges.length);
+            const aBridge = await bridge.getBridge("testBridge:testParentNetwork:1003:testchildNetwork:1004");
+            expect("testBridge:testParentNetwork:1003:testchildNetwork:1004").to.equals(aBridge.key);
+        });
+        it("getAllBridgePairs", async function () {
+            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            await bridge.addBridgePair( "testBridge1", 
+                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            await bridge.addBridgePair( "testBridge2", 
+                "testParentNetwork:1005", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1006", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            const allBridges = await bridge.getAllBridgePairs();
+            expect(2).to.equals(allBridges.length);
+            expect("testBridge1:testParentNetwork:1003:testchildNetwork:1004").to.equals(allBridges[0].key);
+            expect("testBridge2:testParentNetwork:1005:testchildNetwork:1006").to.equals(allBridges[1].key);
         });
     });    
     
