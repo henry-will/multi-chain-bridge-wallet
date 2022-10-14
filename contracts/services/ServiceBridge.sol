@@ -17,10 +17,10 @@ contract ServiceBridge {
 
     fallback() external payable {}
 
-    // function getAllBridgePairs() external view returns (BridgePair[] memory brigePairs)
-    // {
-    //     return bridgePairs.getValues();
-    // }
+    function getAllBridgePairs() external view returns (BridgePair[] memory brigePairs)
+    {
+        return bridgePairs.getValues();
+    }
 
     function addBridgePair(
         string memory _name, 

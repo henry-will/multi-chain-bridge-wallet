@@ -82,15 +82,15 @@ library IterableBridgeMap {
         return lastKey;
     }
 
-    // function getValues(Map storage map) public view returns (BridgePair[] storage)
-    // {
-    //     uint256 totalSize = map.keys.length;
-    //     BridgePair[] storage allBridgePairs = new BridgePair[](
-    //         totalSize
-    //     );
-    //     for (uint256 index = 0; index < totalSize; index++) {
-    //         allBridgePairs[index] = map.values[map.keys[index]];
-    //     }
-    //     return allBridgePairs;
-    // }
+    function getValues(Map storage map) public view returns (BridgePair[] memory)
+    {
+        uint256 totalSize = map.keys.length;
+        BridgePair[] memory allBridgePairs = new BridgePair[](
+            totalSize
+        );
+        for (uint256 index = 0; index < totalSize; index++) {
+            allBridgePairs[index] = map.values[map.keys[index]];
+        }
+        return allBridgePairs;
+    }
 }

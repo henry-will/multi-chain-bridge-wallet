@@ -44,6 +44,14 @@ describe("ServiceBridge", function () {
             const id = await bridge.makeKey("testBridge", "testParentNetwork:1003", "testchildNetwork:1004");
             expect(id).to.equals("testBridge:testParentNetwork:1003:testchildNetwork:1004");
         });
+        it("addBridgePair", async function () {
+            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            await bridge.addBridgePair( "testBridge", 
+                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            const bridges = await bridge.getAllBridgePairs();
+            expect(1).to.equals(bridges.length);
+        });
     });    
     
     describe("Test TokenList", function () {
