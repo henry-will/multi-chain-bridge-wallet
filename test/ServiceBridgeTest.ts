@@ -38,13 +38,13 @@ describe("ServiceBridge", function () {
         return { bridge, tokenListCallTest, owner, otherAccount };
     }
 
-    describe("Deployed Contract", function () {
+    describe("BridgePair Test", function () {
         it("makeKey", async function () {
             const { bridge } = await loadFixture(deployServiceBridgeFixture);
             const id = await bridge.makeKey("testBridge", "testParentNetwork:1003", "testchildNetwork:1004");
             expect(id).to.equals("testBridge:testParentNetwork:1003:testchildNetwork:1004");
         });
-        it("addBridgePair", async function () {
+        it("addBridgePair & getBridge", async function () {
             const { bridge } = await loadFixture(deployServiceBridgeFixture);
             await bridge.addBridgePair( "testBridge", 
                 "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
@@ -60,10 +60,14 @@ describe("ServiceBridge", function () {
             await bridge.addBridgePair( "testBridge2", 
                 "testParentNetwork:1005", "0x01118cb788f411fcaf467414a4abe674a80aa111",
                 "testchildNetwork:1006", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+            await bridge.addBridgePair( "testBridge3", 
+                "testParentNetwork:1007", "0x01118cb788f411fcaf467414a4abe674a80aa111",
+                "testchildNetwork:1008", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
             const allBridges = await bridge.getAllBridgePairs();
-            expect(2).to.equals(allBridges.length);
+            expect(3).to.equals(allBridges.length);
             expect("testBridge1:testParentNetwork:1003:testchildNetwork:1004").to.equals(allBridges[0].key);
             expect("testBridge2:testParentNetwork:1005:testchildNetwork:1006").to.equals(allBridges[1].key);
+            expect("testBridge3:testParentNetwork:1007:testchildNetwork:1008").to.equals(allBridges[2].key);
         });
         it("deleteBridge", async function () {
             const { bridge } = await loadFixture(deployServiceBridgeFixture);
@@ -79,6 +83,9 @@ describe("ServiceBridge", function () {
             const allBridges2 = await bridge.getAllBridgePairs();
             expect(1).to.equals(allBridges2.length);
             expect("testBridge2:testParentNetwork:1005:testchildNetwork:1006").to.equals(allBridges2[0].key);
+            await bridge.deleteBridge("testBridge2:testParentNetwork:1005:testchildNetwork:1006");
+            const allBridges3 = await bridge.getAllBridgePairs();
+            expect(0).to.equals(allBridges3.length);
         });
     });    
     

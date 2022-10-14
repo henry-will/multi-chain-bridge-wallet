@@ -39,17 +39,15 @@ contract ServiceBridge {
     }
 
 
-    function makeKey(
-        string memory _name, 
-        string memory _parentNetworkKey, 
-        string memory _childNetworkKey ) public pure returns (string memory)
+    function makeKey( string memory _name, string memory _parentNetworkKey, string memory _childNetworkKey ) 
+        public pure 
+        returns (string memory)
     {
         return string.concat( _name, ":", _parentNetworkKey, ":", _childNetworkKey );
     }
 
 
-    function deleteBridge(string memory key) 
-        public 
+    function deleteBridge(string memory key) public 
     {
         bridgePairs.remove(key);
     }
