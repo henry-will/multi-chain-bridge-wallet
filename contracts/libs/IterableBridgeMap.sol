@@ -12,51 +12,53 @@ library IterableBridgeMap {
         mapping(string => bool) inserted;
     }
 
-    function get(Map storage map, string memory key)
-        public
-        view
-        returns (BridgePair memory)
+    function get(Map storage map, string memory key) public view returns (BridgePair storage)
     {
         return map.values[key];
     }
 
-    function exist(Map storage map, string memory key)
-        public
-        view
-        returns (bool)
+    function exist(Map storage map, string memory key) public view returns (bool) 
     {
-        BridgePair memory bridgePair = get(map, key);
-        return StringUtil.stringCompare(key, bridgePair.networkKey);
+        BridgePair storage bridgePair = get(map, key);
+        return StringUtil.stringCompare(key, bridgePair.key);
     }
 
-    function getKeyAtIndex(Map storage map, uint256 index)
-        public
-        view
-        returns (string memory)
+    function getKeyAtIndex(Map storage map, uint256 index) public view returns (string memory) 
     {
         return map.keys[index];
     }
 
-    function size(Map storage map) public view returns (uint256) {
+    function size(Map storage map) public view returns (uint256) 
+    {
         return map.keys.length;
     }
 
-    function set(
-        Map storage map,
-        string memory key,
-        BridgePair memory val
-    ) public {
-        if (map.inserted[key]) {
-            map.values[key] = val;
-        } else {
+    function set(Map storage map, string memory key, BridgePair memory val) public 
+    {
+        if (!map.inserted[key]) {
             map.inserted[key] = true;
-            map.values[key] = val;
             map.indexOf[key] = map.keys.length;
             map.keys.push(key);
         }
+
+        // map.values[key] = val;
+
+        map.values[key].key = val.key;
+        map.values[key].name = val.name;
+
+        map.values[key].parentNetworkKey = val.parentNetworkKey;
+        map.values[key].parentBridgeAddress = val.parentBridgeAddress;
+        map.values[key].parentBridgeTokens = val.parentBridgeTokens;            
+        map.values[key].parentBridgeTokenSize = val.parentBridgeTokenSize;
+
+        map.values[key].childNetworkKey = val.childNetworkKey;
+        map.values[key].childBridgeAddress = val.childBridgeAddress;
+        map.values[key].childBridgeTokens = val.childBridgeTokens;
+        map.values[key].childBridgeTokenSize = val.childBridgeTokenSize;
     }
 
-    function remove(Map storage map, string memory key) public {
+    function remove(Map storage map, string memory key) public 
+    {
         if (!map.inserted[key]) {
             return;
         }
@@ -70,9 +72,7 @@ library IterableBridgeMap {
         delete map.indexOf[key];
     }
 
-    function removeKey(Map storage map, uint256 keyIndex)
-        private
-        returns (string memory lastKey)
+    function removeKey(Map storage map, uint256 keyIndex) private returns (string memory lastKey)
     {
         uint256 lastIndex = map.keys.length - 1;
         lastKey = map.keys[lastIndex];
@@ -82,18 +82,15 @@ library IterableBridgeMap {
         return lastKey;
     }
 
-    function getValues(Map storage map)
-        public
-        view
-        returns (BridgePair[] memory)
-    {
-        uint256 totalSize = map.keys.length;
-        BridgePair[] memory allBridgePairs = new BridgePair[](
-            totalSize
-        );
-        for (uint256 index = 0; index < totalSize; index++) {
-            allBridgePairs[index] = map.values[map.keys[index]];
-        }
-        return allBridgePairs;
-    }
+    // function getValues(Map storage map) public view returns (BridgePair[] storage)
+    // {
+    //     uint256 totalSize = map.keys.length;
+    //     BridgePair[] storage allBridgePairs = new BridgePair[](
+    //         totalSize
+    //     );
+    //     for (uint256 index = 0; index < totalSize; index++) {
+    //         allBridgePairs[index] = map.values[map.keys[index]];
+    //     }
+    //     return allBridgePairs;
+    // }
 }

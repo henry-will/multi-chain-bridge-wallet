@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "./AppModel.sol";
+// import "./AppModel.sol";
 
 enum TokenType {
     ERC20,
@@ -14,11 +14,13 @@ enum TokenType {
 }
 
 struct Token {
-    string key;
-    string name;
-    string symbol;
     address tokenAddress;
     string tokenType;
+
+    // IERC20Token feature
+    string name;
+    string symbol;
     uint256 decimals;
-    App apps;
+
+    // App apps;
 }

@@ -4,13 +4,21 @@ pragma solidity >=0.8.17 <0.9.0;
 import "./TokenModel.sol";
 
 struct BridgePair {
-    string networkKey;
-    Bridge parentBridge;
-    Bridge childBridge;
-}
-
-struct Bridge {
+    // BridgePair's key made by parentNetworkKey + childNetworkKey + name
+    string key;
     string name;
-    address bridgeAddress;
-    Token[] registeredTokens;
+
+    // parent bridge info 
+    string parentNetworkKey;
+    address parentBridgeAddress;
+    // mapping(uint => Token) parentBridgeTokens; 
+    string[] parentBridgeTokens; 
+    uint parentBridgeTokenSize; 
+
+    // child bridge info 
+    string childNetworkKey;
+    address childBridgeAddress;
+    // mapping(uint => Token) childrenBridgeTokens; 
+    string[] childBridgeTokens; 
+    uint childBridgeTokenSize; 
 }

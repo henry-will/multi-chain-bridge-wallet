@@ -15,55 +15,61 @@ contract ServiceBridge {
 
     receive() external payable {}
 
-    function getAllBridgePairs()
-        external
-        view
-        returns (BridgePair[] memory brigePairs)
-    {
-        return bridgePairs.getValues();
-    }
+    fallback() external payable {}
+
+    // function getAllBridgePairs() external view returns (BridgePair[] memory brigePairs)
+    // {
+    //     return bridgePairs.getValues();
+    // }
 
     function addBridgePair(
-        string memory key,
-        string memory parentBridgeName,
-        address parentBridgeAddress,
-        string memory childBridgeName,
-        address childBridgeAddress
-    ) public {
-        require(!bridgePairs.exist(key), string.concat(key, " already exists"));
-
-        BridgePair memory bridgePair;
-
-        bridgePair.networkKey = key;
-        bridgePair.parentBridge = makeBridge(
-            parentBridgeName,
-            parentBridgeAddress
-        );
-        bridgePair.childBridge = makeBridge(
-            childBridgeName,
-            childBridgeAddress
-        );
-
-        bridgePairs.set(key, bridgePair);
-    }
-
-    function makeBridge(string memory name, address bridgeAddress)
-        private
-        pure
-        returns (Bridge memory)
+        string memory _name, 
+        string memory _parentNetworkKey, 
+        address _parentBridgeAddress,
+        string memory _childNetworkKey, 
+        address _childBridgeAddress ) public 
     {
-        Bridge memory bridge;
-        bridge.name = name;
-        bridge.bridgeAddress = bridgeAddress;
-        return bridge;
+        string memory _key; 
+        _key = makeKey( _name, _parentNetworkKey, _childNetworkKey );
+        require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
+
+        // BridgePair storage bridgePair; 
+
+        // bridgePair.key = _key;
+        // bridgePair.name = _name;
+        // bridgePair.parentNetworkKey = _parentNetworkKey; 
+        // bridgePair.parentBridgeAddress = _parentBridgeAddress; 
+        // bridgePair.parentBridgeTokenSize = 0; 
+        // bridgePair.childNetworkKey = _childNetworkKey; 
+        // bridgePair.childBridgeAddress = _childBridgeAddress; 
+        // bridgePair.parentBridgeTokenSize = 0; 
+
+
+        BridgePair memory bridgePair = BridgePair( 
+            _key, _name, 
+            _parentNetworkKey, _parentBridgeAddress, new string[](0), 0, 
+            _childNetworkKey, _childBridgeAddress, new string[](0), 0
+        ); 
+
+        bridgePairs.set(_key, bridgePair);
     }
+
+
+    function makeKey(
+        string memory _name, 
+        string memory _parentNetworkKey, 
+        string memory _childNetworkKey ) public pure returns (string memory)
+    {
+        return string.concat( _name, ":", _parentNetworkKey, ":", _childNetworkKey );
+    }
+
+
 
     string constant getRegisteredTokenListFunction = "getRegisteredTokenList()";
     string constant NAMEFunction = "NAME()";
     string constant SYMBOLFunction = "SYMBOL()";
     string constant DECIMALSFunction = "DECIMALS()";
 
-    fallback() external payable {}
 
     function findTokenAddressListBySignature(address bridgeAddress)
         public

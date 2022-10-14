@@ -27,6 +27,7 @@ describe("ServiceBridge", function () {
             }
         });
         const bridge = await ServiceBridge.deploy();
+        await bridge.deployed();
 
         const TokenListCallTest = await ethers.getContractFactory("TokenListCallTest", {
             signer: owner,
@@ -36,6 +37,15 @@ describe("ServiceBridge", function () {
 
         return { bridge, tokenListCallTest, owner, otherAccount };
     }
+
+    describe("Deployed Contract", function () {
+        it("makeKey", async function () {
+            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            const id = await bridge.makeKey("testBridge", "testParentNetwork:1003", "testchildNetwork:1004");
+            expect(id).to.equals("testBridge:testParentNetwork:1003:testchildNetwork:1004");
+        });
+    });    
+    
     describe("Test TokenList", function () {
         it("should be listed with Token model", async function () {
             const { tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
