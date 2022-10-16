@@ -68,16 +68,16 @@ contract ServiceBridge {
 
         bridgePair.parentNetworkKey = _parentNetworkKey;
         bridgePair.parentBridgeAddress = _parentBridgeAddress;
-        bridgePair.parentBridgeTokenAddress = new address[](0);
-        bridgePair.parentBridgeTokenType = new string[](0);
-        bridgePair.parentBridgeTokenName = new string[](0);
-        bridgePair.parentBridgeTokenSymbol = new string[](0); 
-        bridgePair.parentBridgeTokenDecimals = new uint256[](0);
-        // bridgePair.parentBridgeTokenAddress = _pTokenAddress;
-        // bridgePair.parentBridgeTokenType = _pTokenType;
-        // bridgePair.parentBridgeTokenName = _pTokenName;
-        // bridgePair.parentBridgeTokenSymbol = _pTokenSymbol; 
-        // bridgePair.parentBridgeTokenDecimals = _pTokenDecimals;
+        // bridgePair.parentBridgeTokenAddress = new address[](0);
+        // bridgePair.parentBridgeTokenType = new string[](0);
+        // bridgePair.parentBridgeTokenName = new string[](0);
+        // bridgePair.parentBridgeTokenSymbol = new string[](0); 
+        // bridgePair.parentBridgeTokenDecimals = new uint256[](0);
+        bridgePair.parentBridgeTokenAddress = _pTokenAddress;
+        bridgePair.parentBridgeTokenType = _pTokenType;
+        bridgePair.parentBridgeTokenName = _pTokenName;
+        bridgePair.parentBridgeTokenSymbol = _pTokenSymbol; 
+        bridgePair.parentBridgeTokenDecimals = _pTokenDecimals;
         
         bridgePair.childNetworkKey = _childNetworkKey;
         bridgePair.childBridgeAddress = _childBridgeAddress;
@@ -120,6 +120,30 @@ contract ServiceBridge {
         return bridgePairs.getValues();
     }
 
+
+    function getParentTokenAddress(string memory key) 
+        external view 
+        returns (address[] memory)
+    {
+        BridgePair memory bPair = getBridge( key ); 
+        return bPair.parentBridgeTokenAddress;
+    }
+
+    function getParentTokenName(string memory key) 
+        external view 
+        returns (string[] memory)
+    {
+        BridgePair memory bPair = getBridge( key ); 
+        return bPair.parentBridgeTokenName;
+    }
+
+    function getParentTokenSymbol(string memory key) 
+        external view 
+        returns (string[] memory)
+    {
+        BridgePair memory bPair = getBridge( key ); 
+        return bPair.parentBridgeTokenSymbol;
+    }
 
     string constant getRegisteredTokenListFunction = "getRegisteredTokenList()";
     string constant NAMEFunction = "NAME()";
