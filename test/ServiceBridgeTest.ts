@@ -118,7 +118,7 @@ describe("ServiceBridge", function () {
         });
         it("Token Name List", async function () {
             const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
-            await tokenListCallTest.registered(); 
+             
             const pAddress = await tokenListCallTest.getParent(); 
             const cAddress = await tokenListCallTest.getChild(); 
 
@@ -131,7 +131,7 @@ describe("ServiceBridge", function () {
         });
         it("Token Symbol List", async function () {
             const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
-            await tokenListCallTest.registered();
+            
             const pAddress = await tokenListCallTest.getParent(); 
             const cAddress = await tokenListCallTest.getChild(); 
 
