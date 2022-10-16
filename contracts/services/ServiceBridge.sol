@@ -29,11 +29,63 @@ contract ServiceBridge {
         _key = makeKey( _name, _parentNetworkKey, _childNetworkKey );
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
-        BridgePair memory bridgePair = BridgePair( 
-            _key, _name, 
-            _parentNetworkKey, _parentBridgeAddress, new string[](0), 0, 
-            _childNetworkKey, _childBridgeAddress, new string[](0), 0
-        ); 
+        // parentBridge Token list update
+        // address parentBridge = address(_parentBridgeAddress);
+        // IBridgeTokens iBridgeTokens = IBridgeTokens(parentBridge);
+        // address[] memory tokenContracts = iBridgeTokens.getRegisteredTokenList();
+
+        // address[] memory _pTokenAddress = new address[](tokenContracts.length); 
+        // string[] memory _pTokenType = new string[](tokenContracts.length); 
+        // string[] memory _pTokenName = new string[](tokenContracts.length);  
+        // string[] memory _pTokenSymbol = new string[](tokenContracts.length);
+        // uint256[] memory _pTokenDecimals = new uint256[](tokenContracts.length);
+
+        // for (uint256 i = 0; i < tokenContracts.length; i++) {
+        //     address tokenAddress = tokenContracts[i];
+        //     IERC20Token tokenContract = IERC20Token(tokenAddress);
+            
+        //     _pTokenAddress[i] = tokenAddress ;
+        //     _pTokenType[i] = "TokenType.ERC20" ;
+        //     _pTokenName[i] = tokenContract.NAME() ;
+        //     _pTokenSymbol[i] = tokenContract.SYMBOL() ;
+        //     _pTokenDecimals[i] = tokenContract.DECIMALS() ;
+        // }
+
+        // childBridge Token list update
+
+
+
+        // initialize with params
+        // BridgePair memory bridgePair = BridgePair( 
+        //     _key, _name, 
+        //     _parentNetworkKey, _parentBridgeAddress, new address[](0), new string[](0), new string[](0), new string[](0), new uint256[](0), 
+        //     _childNetworkKey, _childBridgeAddress, new address[](0), new string[](0), new string[](0), new string[](0), new uint256[](0)
+        // ); 
+        BridgePair memory bridgePair;
+
+        bridgePair.key = _key; 
+        bridgePair.name = _name;
+
+        bridgePair.parentNetworkKey = _parentNetworkKey;
+        bridgePair.parentBridgeAddress = _parentBridgeAddress;
+        bridgePair.parentBridgeTokenAddress = new address[](0);
+        bridgePair.parentBridgeTokenType = new string[](0);
+        bridgePair.parentBridgeTokenName = new string[](0);
+        bridgePair.parentBridgeTokenSymbol = new string[](0); 
+        bridgePair.parentBridgeTokenDecimals = new uint256[](0);
+        // bridgePair.parentBridgeTokenAddress = _pTokenAddress;
+        // bridgePair.parentBridgeTokenType = _pTokenType;
+        // bridgePair.parentBridgeTokenName = _pTokenName;
+        // bridgePair.parentBridgeTokenSymbol = _pTokenSymbol; 
+        // bridgePair.parentBridgeTokenDecimals = _pTokenDecimals;
+        
+        bridgePair.childNetworkKey = _childNetworkKey;
+        bridgePair.childBridgeAddress = _childBridgeAddress;
+        bridgePair.childBridgeTokenAddress = new address[](0);
+        bridgePair.childBridgeTokenType = new string[](0);
+        bridgePair.childBridgeTokenName = new string[](0);
+        bridgePair.childBridgeTokenSymbol = new string[](0); 
+        bridgePair.childBridgeTokenDecimals = new uint256[](0);
 
         bridgePairs.set(_key, bridgePair);
     }
@@ -45,7 +97,7 @@ contract ServiceBridge {
     {
         return string.concat( _name, ":", _parentNetworkKey, ":", _childNetworkKey );
     }
-
+    
 
     function deleteBridge(string memory key) public 
     {

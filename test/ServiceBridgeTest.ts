@@ -30,7 +30,7 @@ describe("ServiceBridge", function () {
         await bridge.deployed();
 
         const TokenListCallTest = await ethers.getContractFactory("TokenListCallTest", {
-            signer: owner,
+            signer: owner
         });
         const tokenListCallTest = await TokenListCallTest.deploy();
 

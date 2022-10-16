@@ -12,13 +12,22 @@ struct BridgePair {
     string parentNetworkKey;
     address parentBridgeAddress;
     // mapping(uint => Token) parentBridgeTokens; 
-    string[] parentBridgeTokens; 
-    uint parentBridgeTokenSize; 
+    // uint parentBridgeTokenSize;  
+    address[] parentBridgeTokenAddress;
+    string[] parentBridgeTokenType;
+    string[] parentBridgeTokenName;
+    string[] parentBridgeTokenSymbol;
+    uint256[] parentBridgeTokenDecimals;
+
 
     // child bridge info 
     string childNetworkKey;
     address childBridgeAddress;
     // mapping(uint => Token) childrenBridgeTokens; 
-    string[] childBridgeTokens; 
-    uint childBridgeTokenSize; 
+    // uint childBridgeTokenSize; 
+    address[] childBridgeTokenAddress;
+    string[] childBridgeTokenType;
+    string[] childBridgeTokenName;
+    string[] childBridgeTokenSymbol;
+    uint256[] childBridgeTokenDecimals;
 }
