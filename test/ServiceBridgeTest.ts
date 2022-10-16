@@ -33,7 +33,7 @@ describe("ServiceBridge", function () {
             signer: owner
         });
         const tokenListCallTest = await TokenListCallTest.deploy();
-
+        await tokenListCallTest.registered();
 
         return { bridge, tokenListCallTest, owner, otherAccount };
     }
@@ -45,24 +45,34 @@ describe("ServiceBridge", function () {
             expect(id).to.equals("testBridge:testParentNetwork:1003:testchildNetwork:1004");
         });
         it("addBridgePair & getBridge", async function () {
-            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+                
+            const pAddress = await tokenListCallTest.getParent(); 
+            // console.log("pAddress", pAddress);
+            const cAddress = await tokenListCallTest.getChild(); 
+            // console.log("cAddress", cAddress);
+
             await bridge.addBridgePair( "testBridge", 
-                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1003", pAddress, 
+                "testchildNetwork:1004", cAddress  );
             const aBridge = await bridge.getBridge("testBridge:testParentNetwork:1003:testchildNetwork:1004");
             expect("testBridge:testParentNetwork:1003:testchildNetwork:1004").to.equals(aBridge.key);
         });
         it("getAllBridgePairs", async function () {
-            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+
+            const pAddress = await tokenListCallTest.getParent(); 
+            const cAddress = await tokenListCallTest.getChild(); 
+            
             await bridge.addBridgePair( "testBridge1", 
-                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1003", pAddress,
+                "testchildNetwork:1004", cAddress  );
             await bridge.addBridgePair( "testBridge2", 
-                "testParentNetwork:1005", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1006", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1005", pAddress,
+                "testchildNetwork:1006", cAddress  );
             await bridge.addBridgePair( "testBridge3", 
-                "testParentNetwork:1007", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1008", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1007", pAddress,
+                "testchildNetwork:1008", cAddress  );
             const allBridges = await bridge.getAllBridgePairs();
             expect(3).to.equals(allBridges.length);
             expect("testBridge1:testParentNetwork:1003:testchildNetwork:1004").to.equals(allBridges[0].key);
@@ -70,13 +80,17 @@ describe("ServiceBridge", function () {
             expect("testBridge3:testParentNetwork:1007:testchildNetwork:1008").to.equals(allBridges[2].key);
         });
         it("deleteBridge", async function () {
-            const { bridge } = await loadFixture(deployServiceBridgeFixture);
+            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+
+            const pAddress = await tokenListCallTest.getParent(); 
+            const cAddress = await tokenListCallTest.getChild(); 
+
             await bridge.addBridgePair( "testBridge1", 
-                "testParentNetwork:1003", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1004", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1003", pAddress,
+                "testchildNetwork:1004", cAddress  );
             await bridge.addBridgePair( "testBridge2", 
-                "testParentNetwork:1005", "0x01118cb788f411fcaf467414a4abe674a80aa111",
-                "testchildNetwork:1006", "0x02228cb788f411fcaf467414a4abe674a80aa222"  );
+                "testParentNetwork:1005", pAddress,
+                "testchildNetwork:1006", cAddress  );
             const allBridges1 = await bridge.getAllBridgePairs();
             expect(2).to.equals(allBridges1.length);
             await bridge.deleteBridge("testBridge1:testParentNetwork:1003:testchildNetwork:1004");
@@ -92,7 +106,6 @@ describe("ServiceBridge", function () {
     describe("Test TokenList", function () {
         it("should be listed with Token model", async function () {
             const { tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
-            await tokenListCallTest.registered();
             const tokens = await tokenListCallTest.findTokenList();
             console.log("### tokens", tokens);
             tokens.length.should.be.equals(2);

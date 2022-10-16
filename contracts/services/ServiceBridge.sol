@@ -30,26 +30,26 @@ contract ServiceBridge {
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
         // parentBridge Token list update
-        // address parentBridge = address(_parentBridgeAddress);
-        // IBridgeTokens iBridgeTokens = IBridgeTokens(parentBridge);
-        // address[] memory tokenContracts = iBridgeTokens.getRegisteredTokenList();
+        address parentBridge = address(_parentBridgeAddress);
+        IBridgeTokens iBridgeTokens = IBridgeTokens(parentBridge);
+        address[] memory tokenContracts = iBridgeTokens.getRegisteredTokenList();
 
-        // address[] memory _pTokenAddress = new address[](tokenContracts.length); 
-        // string[] memory _pTokenType = new string[](tokenContracts.length); 
-        // string[] memory _pTokenName = new string[](tokenContracts.length);  
-        // string[] memory _pTokenSymbol = new string[](tokenContracts.length);
-        // uint256[] memory _pTokenDecimals = new uint256[](tokenContracts.length);
+        address[] memory _pTokenAddress = new address[](tokenContracts.length); 
+        string[] memory _pTokenType = new string[](tokenContracts.length); 
+        string[] memory _pTokenName = new string[](tokenContracts.length);  
+        string[] memory _pTokenSymbol = new string[](tokenContracts.length);
+        uint256[] memory _pTokenDecimals = new uint256[](tokenContracts.length);
 
-        // for (uint256 i = 0; i < tokenContracts.length; i++) {
-        //     address tokenAddress = tokenContracts[i];
-        //     IERC20Token tokenContract = IERC20Token(tokenAddress);
+        for (uint256 i = 0; i < tokenContracts.length; i++) {
+            address tokenAddress = tokenContracts[i];
+            IERC20Token tokenContract = IERC20Token(tokenAddress);
             
-        //     _pTokenAddress[i] = tokenAddress ;
-        //     _pTokenType[i] = "TokenType.ERC20" ;
-        //     _pTokenName[i] = tokenContract.NAME() ;
-        //     _pTokenSymbol[i] = tokenContract.SYMBOL() ;
-        //     _pTokenDecimals[i] = tokenContract.DECIMALS() ;
-        // }
+            _pTokenAddress[i] = tokenAddress ;
+            _pTokenType[i] = "TokenType.ERC20" ;
+            _pTokenName[i] = tokenContract.NAME() ;
+            _pTokenSymbol[i] = tokenContract.SYMBOL() ;
+            _pTokenDecimals[i] = tokenContract.DECIMALS() ;
+        }
 
         // childBridge Token list update
 

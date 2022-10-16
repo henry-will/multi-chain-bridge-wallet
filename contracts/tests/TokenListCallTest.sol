@@ -10,22 +10,32 @@ import "./ERC20Test.sol";
 
 contract TokenListCallTest {
     Token[] registeredTokens;
+    address parent; 
+    address child;
+
+    function getParent() public view returns (address){
+        return parent;
+    }
+
+    function getChild() public view returns (address){
+        return child;
+    }
 
     function registered() public {
         ParentBridgeTest parentTest = new ParentBridgeTest();
-        address parent = address(parentTest);
+        parent = address(parentTest);
         Token[] memory tokens = getTokens(IBridgeTokens(parent));
         for (uint256 i = 0; i < tokens.length; i++) {
             registeredTokens.push(tokens[i]);
         }
 
         // ChildBridgeTest childTest = new ChildBridgeTest();
-        // address a = address(childTest);
+        ChildBridgeTest childTest = new ChildBridgeTest();
+        child = address(childTest);
     }
 
     function getTokens(IBridgeTokens bridgeTokens)
-        public
-        view
+        public view
         returns (Token[] memory)
     {
         address[] memory tokenContracts = bridgeTokens.getRegisteredTokenList();
