@@ -23,3 +23,15 @@ contract ERC20Test04 {
     string public constant SYMBOL = "CSCT04";
     uint8 public constant DECIMALS = 12;
 }
+
+contract ERC20Test05 {
+    string public constant NAME = "Parent ServiceChainToken 05";
+    string public constant SYMBOL = "PSCT05";
+    uint8 public constant DECIMALS = 18;
+}
+
+contract ERC20Test06 {
+    string public constant NAME = "Parent ServiceChainToken 06";
+    string public constant SYMBOL = "PSCT06";
+    uint8 public constant DECIMALS = 9;
+}

@@ -14,6 +14,11 @@ contract ParentBridgeTest {
         tokens.push(address(token02));
     }
 
+
+    function add( address token ) external {
+        tokens.push( token );
+    }
+
     function getRegisteredTokenList() external view returns (address[] memory) {
         return tokens;
     }

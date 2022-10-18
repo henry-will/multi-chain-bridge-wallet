@@ -52,9 +52,7 @@ describe("ServiceBridge", function () {
             const cAddress = await tokenListCallTest.getChild(); 
             // console.log("cAddress", cAddress);
 
-            await bridge.addBridgePair( "testBridge", 
-                "testParentNetwork:1003", pAddress, 
-                "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
             const aBridge = await bridge.getBridge("testBridge:testParentNetwork:1003:testchildNetwork:1004");
             expect("testBridge:testParentNetwork:1003:testchildNetwork:1004").to.equals(aBridge.key);
         });
@@ -64,15 +62,9 @@ describe("ServiceBridge", function () {
             const pAddress = await tokenListCallTest.getParent(); 
             const cAddress = await tokenListCallTest.getChild(); 
             
-            await bridge.addBridgePair( "testBridge1", 
-                "testParentNetwork:1003", pAddress,
-                "testchildNetwork:1004", cAddress  );
-            await bridge.addBridgePair( "testBridge2", 
-                "testParentNetwork:1005", pAddress,
-                "testchildNetwork:1006", cAddress  );
-            await bridge.addBridgePair( "testBridge3", 
-                "testParentNetwork:1007", pAddress,
-                "testchildNetwork:1008", cAddress  );
+            await bridge.addBridgePair( "testBridge1", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge2", "testParentNetwork:1005", pAddress, "testchildNetwork:1006", cAddress  );
+            await bridge.addBridgePair( "testBridge3", "testParentNetwork:1007", pAddress, "testchildNetwork:1008", cAddress  );
             const allBridges = await bridge.getAllBridgePairs();
             expect(3).to.equals(allBridges.length);
             expect("testBridge1:testParentNetwork:1003:testchildNetwork:1004").to.equals(allBridges[0].key);
@@ -85,12 +77,8 @@ describe("ServiceBridge", function () {
             const pAddress = await tokenListCallTest.getParent(); 
             const cAddress = await tokenListCallTest.getChild(); 
 
-            await bridge.addBridgePair( "testBridge1", 
-                "testParentNetwork:1003", pAddress,
-                "testchildNetwork:1004", cAddress  );
-            await bridge.addBridgePair( "testBridge2", 
-                "testParentNetwork:1005", pAddress,
-                "testchildNetwork:1006", cAddress  );
+            await bridge.addBridgePair( "testBridge1", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge2", "testParentNetwork:1005", pAddress, "testchildNetwork:1006", cAddress  );
             const allBridges1 = await bridge.getAllBridgePairs();
             expect(2).to.equals(allBridges1.length);
             await bridge.deleteBridge("testBridge1:testParentNetwork:1003:testchildNetwork:1004");
@@ -109,9 +97,7 @@ describe("ServiceBridge", function () {
             const cAddress = await tokenListCallTest.getChild(); 
             // console.log("cAddress", cAddress);
 
-            await bridge.addBridgePair( "testBridge", 
-                "testParentNetwork:1003", pAddress, 
-                "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
             const tokens = await bridge.getParentTokenAddress("testBridge:testParentNetwork:1003:testchildNetwork:1004");
             console.log( "token addresses", tokens );
             expect(2).to.equals(tokens.length);
@@ -122,9 +108,7 @@ describe("ServiceBridge", function () {
             const pAddress = await tokenListCallTest.getParent(); 
             const cAddress = await tokenListCallTest.getChild(); 
 
-            await bridge.addBridgePair( "testBridge", 
-                "testParentNetwork:1003", pAddress, 
-                "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
             const tokens = await bridge.getParentTokenName("testBridge:testParentNetwork:1003:testchildNetwork:1004");
             console.log( "token names", tokens );
             expect(2).to.equals(tokens.length);
@@ -141,6 +125,24 @@ describe("ServiceBridge", function () {
             const tokens = await bridge.getParentTokenSymbol("testBridge:testParentNetwork:1003:testchildNetwork:1004");
             console.log( "token symbols", tokens );
             expect(2).to.equals(tokens.length);
+        });
+        it("Update Token List", async function () {
+            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+            
+            const pAddress = await tokenListCallTest.getParent(); 
+            const cAddress = await tokenListCallTest.getChild(); 
+
+            await bridge.addBridgePair( "testBridge", "testParentNetwork:1003", pAddress, "testchildNetwork:1004", cAddress  );
+            const tokens1 = await bridge.getParentTokenSymbol("testBridge:testParentNetwork:1003:testchildNetwork:1004");
+            console.log( "token symbols", tokens1 );
+            expect(2).to.equals(tokens1.length);
+
+            await tokenListCallTest.added();
+            await bridge.updateParentTokenList( "testBridge:testParentNetwork:1003:testchildNetwork:1004" );
+            const tokens2 = await bridge.getParentTokenSymbol("testBridge:testParentNetwork:1003:testchildNetwork:1004");
+            console.log( "token symbols", tokens2 );
+            expect(4).to.equals(tokens2.length);
+            
         });
     });    
     

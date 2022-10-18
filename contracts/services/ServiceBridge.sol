@@ -30,7 +30,7 @@ contract ServiceBridge {
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
         // parentBridge Token list update
-        BridgePair memory bridgePair = updateTokenList( _parentBridgeAddress );
+        BridgePair memory bridgePair = getTokenList( _parentBridgeAddress );
         bridgePair.parentNetworkKey = _parentNetworkKey;
         bridgePair.parentBridgeAddress = _parentBridgeAddress; 
 
@@ -58,7 +58,7 @@ contract ServiceBridge {
     }
     
 
-    function updateTokenList(address _parentBridgeAddress )
+    function getTokenList(address _parentBridgeAddress )
         internal view 
         returns (BridgePair memory)
     {
@@ -140,6 +140,32 @@ contract ServiceBridge {
     {
         BridgePair memory bPair = getBridge( key ); 
         return bPair.parentBridgeTokenSymbol;
+    }
+
+
+    function updateParentTokenList(string memory key) 
+        external 
+    {
+        BridgePair memory bPair = getBridge( key ); 
+
+        // parentBridge Token list update
+        BridgePair memory bridgePair = getTokenList( bPair.parentBridgeAddress );
+        bridgePair.parentNetworkKey = bPair.parentNetworkKey;
+        bridgePair.parentBridgeAddress = bPair.parentBridgeAddress; 
+
+        // childBridge info 
+        bridgePair.childNetworkKey = bPair.childNetworkKey;
+        bridgePair.childBridgeAddress = bPair.childBridgeAddress;
+        bridgePair.childBridgeTokenAddress = bPair.childBridgeTokenAddress;
+        bridgePair.childBridgeTokenType = bPair.childBridgeTokenType;
+        bridgePair.childBridgeTokenName = bPair.childBridgeTokenName;
+        bridgePair.childBridgeTokenSymbol = bPair.childBridgeTokenSymbol; 
+        bridgePair.childBridgeTokenDecimals = bPair.childBridgeTokenDecimals;
+
+        // update bridgePair to the BridgeMap
+        bridgePair.key = bPair.key; 
+        bridgePair.name = bPair.name;
+        bridgePairs.set( key, bridgePair);
     }
 
     string constant getRegisteredTokenListFunction = "getRegisteredTokenList()";

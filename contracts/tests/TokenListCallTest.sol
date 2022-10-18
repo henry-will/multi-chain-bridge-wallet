@@ -8,8 +8,12 @@ import "../../contracts/models/TokenModel.sol";
 import "./BridgeTest.sol";
 import "./ERC20Test.sol";
 
+
 contract TokenListCallTest {
     Token[] registeredTokens;
+    ParentBridgeTest parentTest; 
+    ChildBridgeTest childTest;
+
     address parent; 
     address child;
 
@@ -22,15 +26,14 @@ contract TokenListCallTest {
     }
 
     function registered() public {
-        ParentBridgeTest parentTest = new ParentBridgeTest();
+        parentTest = new ParentBridgeTest();
         parent = address(parentTest);
         Token[] memory tokens = getTokens(IBridgeTokens(parent));
         for (uint256 i = 0; i < tokens.length; i++) {
             registeredTokens.push(tokens[i]);
         }
 
-        // ChildBridgeTest childTest = new ChildBridgeTest();
-        ChildBridgeTest childTest = new ChildBridgeTest();
+        childTest = new ChildBridgeTest();
         child = address(childTest);
     }
 
@@ -39,7 +42,7 @@ contract TokenListCallTest {
         returns (Token[] memory)
     {
         address[] memory tokenContracts = bridgeTokens.getRegisteredTokenList();
-        Token[] memory tokens = new Token[](2);
+        Token[] memory tokens = new Token[](tokenContracts.length);
         for (uint256 i = 0; i < tokenContracts.length; i++) {
             Token memory token;
             IERC20Token tokenContract = IERC20Token(tokenContracts[i]);
@@ -51,6 +54,14 @@ contract TokenListCallTest {
             tokens[i] = token;
         }
         return tokens;
+    }
+
+    function added() public {
+        ERC20Test05 token05 = new ERC20Test05();
+        ERC20Test06 token06 = new ERC20Test06();
+
+        parentTest.add(address(token05));
+        parentTest.add(address(token06));
     }
 
     function findTokenList() public view returns (Token[] memory) {
