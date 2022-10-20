@@ -1,12 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.17 <0.9.0;
 
+import "../interfaces/IBridgeTokens.sol";
+import "../interfaces/IERC20Token.sol";
 import "../models/TokenModel.sol";
 import "../models/NetworkModel.sol";
 import "../models/NetworkKeyModel.sol";
+import "../libs/IterableBridgeMap.sol";
 import "../libs/IterableNetworkMap.sol";
+import "../services/ServiceBridge.sol";
 
-contract ServiceNetwork is NetworkKeyModel {
+contract ServiceNetwork is NetworkKeyModel, ServiceBridge {
     using IterableNetworkMap for IterableNetworkMap.Map;
     IterableNetworkMap.Map private networks;
 
@@ -23,7 +27,7 @@ contract ServiceNetwork is NetworkKeyModel {
         public payable 
         returns (bool) 
     {
-        string memory key = getKey(chainId, shortName);
+        string memory key = getNetworkKey(chainId, shortName);
         require(!networks.exist(key), string.concat(key, " already exists"));
 
         Network memory network;
@@ -57,7 +61,7 @@ contract ServiceNetwork is NetworkKeyModel {
     ) 
         public 
     {
-        string memory newKey = getKey(chainId, shortName);
+        string memory newKey = getNetworkKey(chainId, shortName);
         require(
             StringUtil.stringCompare(key, newKey),
             string.concat(

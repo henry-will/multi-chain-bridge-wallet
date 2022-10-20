@@ -41,7 +41,7 @@ describe("ServiceBridge", function () {
     describe("BridgePair Test", function () {
         it("makeKey", async function () {
             const { bridge } = await loadFixture(deployServiceBridgeFixture);
-            const id = await bridge.makeKey("testBridge", "testParentNetwork:1003", "testchildNetwork:1004");
+            const id = await bridge.makeBridgeKey("testBridge", "testParentNetwork:1003", "testchildNetwork:1004");
             expect(id).to.equals("testBridge:testParentNetwork:1003:testchildNetwork:1004");
         });
         it("addBridgePair & getBridge", async function () {

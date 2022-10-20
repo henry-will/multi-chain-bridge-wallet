@@ -26,7 +26,7 @@ contract ServiceBridge {
         address _childBridgeAddress ) public 
     {
         string memory _key; 
-        _key = makeKey( _name, _parentNetworkKey, _childNetworkKey );
+        _key = makeBridgeKey( _name, _parentNetworkKey, _childNetworkKey );
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
         // parentBridge Token list update
@@ -50,7 +50,7 @@ contract ServiceBridge {
     }
 
 
-    function makeKey( string memory _name, string memory _parentNetworkKey, string memory _childNetworkKey ) 
+    function makeBridgeKey( string memory _name, string memory _parentNetworkKey, string memory _childNetworkKey ) 
         public pure 
         returns (string memory)
     {

@@ -8,24 +8,37 @@ describe("ServiceNetwork", function () {
         // Contracts are deployed using the first signer/account by default
         const [owner, otherAccount] = await ethers.getSigners();
 
+        // Deploy StringUtil
         const StringUtil = await ethers.getContractFactory("StringUtil");
-        const lib2 = await StringUtil.deploy();
-        await lib2.deployed();
+        const libString = await StringUtil.deploy();
+        await libString.deployed();
 
+        // Deploy IterableBridgeMap
+        const IterableBridgeMap = await ethers.getContractFactory("IterableBridgeMap", {
+            signer: owner,
+            libraries: {
+                StringUtil: libString.address,
+            },
+        });
+        const libBridge = await IterableBridgeMap.deploy();
+        await libBridge.deployed();
+
+        // Deploy IterableNetworkMap
         const IterableNetworkMap = await ethers.getContractFactory("IterableNetworkMap", {
             signer: owner,
             libraries: {
-                StringUtil: lib2.address,
+                StringUtil: libString.address,
             },
         });
-        const lib = await IterableNetworkMap.deploy();
-        await lib.deployed();
+        const libNetwork = await IterableNetworkMap.deploy();
+        await libNetwork.deployed();
 
         const ServiceNetwork = await ethers.getContractFactory("ServiceNetwork", {
             signer: owner,
             libraries: {
-                StringUtil: lib2.address,
-                IterableNetworkMap: lib.address,
+                StringUtil: libString.address,
+                IterableBridgeMap: libBridge.address,
+                IterableNetworkMap: libNetwork.address,
             }
         });
         const network = await ServiceNetwork.deploy();
@@ -55,14 +68,14 @@ describe("ServiceNetwork", function () {
             expect(1).to.equals(networks.length);
             expect("").to.equals(networks[0].key);
 
-            const key = await network.getKey("1234", "test");
+            const key = await network.getNetworkKey("1234", "test");
             await network.deleteNetwork(key);
 
         });
         it("should find an added Network", async function () {
             const { network } = await loadFixture(deployServiceNetworkFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
-            const key = await network.getKey("123", "test");
+            const key = await network.getNetworkKey("123", "test");
             const testNetwork = await network.getNetwork(key);
             key.should.equal("123:test");
             testNetwork.should.have.property("chainId");
@@ -72,7 +85,7 @@ describe("ServiceNetwork", function () {
         it("should delete the added Network", async function () {
             const { network } = await loadFixture(deployServiceNetworkFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
-            const key = await network.getKey("123", "test");
+            const key = await network.getNetworkKey("123", "test");
             key.should.equal("123:test");
             await network.deleteNetwork(key);
             const testNetwork = await network.getNetwork(key);

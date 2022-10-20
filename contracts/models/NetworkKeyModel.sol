@@ -7,11 +7,11 @@ contract NetworkKeyModel {
 		string shortName;
 	}
 
-	function getKey(string memory chainId, string memory shortName) public pure returns (string memory key) {
-		return makeKey(NetworkKey(chainId, shortName));
+	function getNetworkKey(string memory chainId, string memory shortName) public pure returns (string memory key) {
+		return makeNetworkKey(NetworkKey(chainId, shortName));
 	}
 
-	function makeKey(NetworkKey memory key) internal pure returns (string memory){
+	function makeNetworkKey(NetworkKey memory key) internal pure returns (string memory){
 		return string.concat(key.chainId, ":", key.shortName);
 	}
 }
