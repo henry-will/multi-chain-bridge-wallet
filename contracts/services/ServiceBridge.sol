@@ -26,7 +26,7 @@ contract ServiceBridge {
         address _childBridgeAddress ) public 
     {
         string memory _key; 
-        _key = makeBridgeKey( _name, _childNetwork );
+        _key = string.concat( _name, "@", _childNetwork );
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
         // parentBridge Token list update
@@ -49,14 +49,6 @@ contract ServiceBridge {
         bridgePairs.set(_key, bridgePair);
     }
 
-
-    function makeBridgeKey( string memory _name, string memory _childNetwork ) 
-        public pure 
-        returns (string memory)
-    {
-        return string.concat( _name, "@", _childNetwork );
-    }
-    
 
     function getTokenList(address _parentBridgeAddress )
         internal view 
