@@ -54,7 +54,7 @@ library IterableBridgeMap {
         map.values[key].key = val.key;
         map.values[key].name = val.name;
 
-        map.values[key].parentNetworkKey = val.parentNetworkKey;
+        map.values[key].parentNetwork = val.parentNetwork;
         map.values[key].parentBridgeAddress = val.parentBridgeAddress;
         // map.values[key].parentBridgeTokens = val.parentBridgeTokens;            
         // map.values[key].parentBridgeTokenSize = val.parentBridgeTokenSize;
@@ -64,7 +64,7 @@ library IterableBridgeMap {
         map.values[key].parentBridgeTokenSymbol = val.parentBridgeTokenSymbol;            
         map.values[key].parentBridgeTokenDecimals = val.parentBridgeTokenDecimals;            
 
-        map.values[key].childNetworkKey = val.childNetworkKey;
+        map.values[key].childNetwork = val.childNetwork;
         map.values[key].childBridgeAddress = val.childBridgeAddress;
         // map.values[key].childBridgeTokens = val.childBridgeTokens;
         // map.values[key].childBridgeTokenSize = val.childBridgeTokenSize;

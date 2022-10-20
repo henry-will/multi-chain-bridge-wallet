@@ -20,22 +20,22 @@ contract ServiceBridge {
 
     function addBridgePair(
         string memory _name, 
-        string memory _parentNetworkKey, 
+        string memory _parentNetwork, 
         address _parentBridgeAddress,
-        string memory _childNetworkKey, 
+        string memory _childNetwork, 
         address _childBridgeAddress ) public 
     {
         string memory _key; 
-        _key = makeBridgeKey( _name, _childNetworkKey );
+        _key = makeBridgeKey( _name, _childNetwork );
         require(!bridgePairs.exist(_key), string.concat(_key, " already exists"));
 
         // parentBridge Token list update
         BridgePair memory bridgePair = getTokenList( _parentBridgeAddress );
-        bridgePair.parentNetworkKey = _parentNetworkKey;
+        bridgePair.parentNetwork = _parentNetwork;
         bridgePair.parentBridgeAddress = _parentBridgeAddress; 
 
         // childBridge info 
-        bridgePair.childNetworkKey = _childNetworkKey;
+        bridgePair.childNetwork = _childNetwork;
         bridgePair.childBridgeAddress = _childBridgeAddress;
         bridgePair.childBridgeTokenAddress = new address[](0);
         bridgePair.childBridgeTokenType = new string[](0);
@@ -50,11 +50,11 @@ contract ServiceBridge {
     }
 
 
-    function makeBridgeKey( string memory _name, string memory _childNetworkKey ) 
+    function makeBridgeKey( string memory _name, string memory _childNetwork ) 
         public pure 
         returns (string memory)
     {
-        return string.concat( _name, "@", _childNetworkKey );
+        return string.concat( _name, "@", _childNetwork );
     }
     
 
@@ -150,11 +150,11 @@ contract ServiceBridge {
 
         // parentBridge Token list update
         BridgePair memory bridgePair = getTokenList( bPair.parentBridgeAddress );
-        bridgePair.parentNetworkKey = bPair.parentNetworkKey;
+        bridgePair.parentNetwork = bPair.parentNetwork;
         bridgePair.parentBridgeAddress = bPair.parentBridgeAddress; 
 
         // childBridge info 
-        bridgePair.childNetworkKey = bPair.childNetworkKey;
+        bridgePair.childNetwork = bPair.childNetwork;
         bridgePair.childBridgeAddress = bPair.childBridgeAddress;
         bridgePair.childBridgeTokenAddress = bPair.childBridgeTokenAddress;
         bridgePair.childBridgeTokenType = bPair.childBridgeTokenType;

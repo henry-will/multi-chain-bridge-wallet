@@ -9,7 +9,7 @@ struct BridgePair {
     string name;
 
     // parent bridge info 
-    string parentNetworkKey;
+    string parentNetwork;
     address parentBridgeAddress;
     // mapping(uint => Token) parentBridgeTokens; 
     // uint parentBridgeTokenSize;  
@@ -21,7 +21,7 @@ struct BridgePair {
 
 
     // child bridge info 
-    string childNetworkKey;
+    string childNetwork;
     address childBridgeAddress;
     // mapping(uint => Token) childrenBridgeTokens; 
     // uint childBridgeTokenSize; 
