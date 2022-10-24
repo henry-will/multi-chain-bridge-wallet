@@ -137,37 +137,58 @@ describe("ServiceBridge", function () {
             expect(4).to.equals(tokens2.length);
             
         });
+        it("Get All Token List", async function () {
+            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+            
+            const pAddress = await tokenListCallTest.getParent(); 
+            const cAddress = await tokenListCallTest.getChild(); 
+
+            await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
+            await bridge.addBridgePair( "testBridge2", "Cypress", pAddress, "testchildNetwork:1004", cAddress  );
+            await bridge.addBridgePair( "testBridge3", "Cypress", pAddress, "testchildNetwork:1005", cAddress  );
+
+            await tokenListCallTest.added();
+            await bridge.updateParentTokenList( "testBridge1@testchildNetwork:1003" );
+
+            const allTokenNum = await bridge.getTotalTokensNum();
+            console.log( "tokens number : ", allTokenNum );        
+            expect(8).to.equals(allTokenNum);
+            const allTokens = await bridge.getAllTokens();
+            console.log( "tokens list", allTokens );
+            expect(8).to.equals(allTokens.length);
+            
+        });
     });    
     
-    describe("Test TokenList", function () {
-        it("should be listed with Token model", async function () {
-            const { tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
-            const tokens = await tokenListCallTest.findTokenList();
-            console.log("### tokens", tokens);
-            tokens.length.should.be.equals(2);
-            tokens[1].name.should.be.equals("Parent ServiceChainToken 02");
-        });
-    });
+    // describe("Test TokenList", function () {
+    //     it("should be listed with Token model", async function () {
+    //         const { tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+    //         const tokens = await tokenListCallTest.findTokenList();
+    //         console.log("### tokens", tokens);
+    //         tokens.length.should.be.equals(2);
+    //         tokens[1].name.should.be.equals("Parent ServiceChainToken 02");
+    //     });
+    // });
 
-    describe("BridgePair In Wallet", function () {
-        it("should be empty when deployed", async function () {
-            const { bridge } = await loadFixture(deployServiceBridgeFixture);
-            const bridgePairs = await bridge.getAllBridgePairs();
-            expect(0).to.equals(bridgePairs.length);
-        });
-        it("should be deploy brige contract and token contracts", async function () {
-        });
-        it("should be add with parent and child in network", async function () {
-        });
-        it("should be registered the token infomations of bridge", async function () {
-        });
-        it("should be list the parent and child tokens of a specific network", async function () {
-        });
-        it("Pepper: should be check CRUD permission of networks, bridges and tokens", async function () {
-        });
-        it("Optional: should be list tokens with klay", async function () {
-        });
-        it("Optional: should be add layer 3 network and game tokens", async function () {
-        });
-    });
+    // describe("BridgePair In Wallet", function () {
+    //     it("should be empty when deployed", async function () {
+    //         const { bridge } = await loadFixture(deployServiceBridgeFixture);
+    //         const bridgePairs = await bridge.getAllBridgePairs();
+    //         expect(0).to.equals(bridgePairs.length);
+    //     });
+    //     it("should be deploy brige contract and token contracts", async function () {
+    //     });
+    //     it("should be add with parent and child in network", async function () {
+    //     });
+    //     it("should be registered the token infomations of bridge", async function () {
+    //     });
+    //     it("should be list the parent and child tokens of a specific network", async function () {
+    //     });
+    //     it("Pepper: should be check CRUD permission of networks, bridges and tokens", async function () {
+    //     });
+    //     it("Optional: should be list tokens with klay", async function () {
+    //     });
+    //     it("Optional: should be add layer 3 network and game tokens", async function () {
+    //     });
+    // });
 });

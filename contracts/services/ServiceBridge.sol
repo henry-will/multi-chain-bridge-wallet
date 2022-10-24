@@ -34,9 +34,10 @@ contract ServiceBridge {
         bridgePair.parentNetwork = _parentNetwork;
         bridgePair.parentBridgeAddress = _parentBridgeAddress; 
 
-        // childBridge info 
+        // childBridge info  -> 로컬 네트워크 통해서 업데이트 하도록... 
         bridgePair.childNetwork = _childNetwork;
         bridgePair.childBridgeAddress = _childBridgeAddress;
+        bridgePair.childBridgeTokenSize = 0;
         bridgePair.childBridgeTokenAddress = new address[](0);
         bridgePair.childBridgeTokenType = new string[](0);
         bridgePair.childBridgeTokenName = new string[](0);
@@ -77,6 +78,7 @@ contract ServiceBridge {
             _pTokenDecimals[i] = tokenContract.DECIMALS() ;
         }
 
+        bridgePair.parentBridgeTokenSize = length;
         bridgePair.parentBridgeTokenAddress = _pTokenAddress;
         bridgePair.parentBridgeTokenType = _pTokenType;
         bridgePair.parentBridgeTokenName = _pTokenName;
@@ -102,12 +104,83 @@ contract ServiceBridge {
 
 
     function getAllBridgePairs() 
-        external view 
+        public view 
         returns (BridgePair[] memory brigePairs)
     {
         return bridgePairs.getValues();
     }
 
+
+    function getTotalTokensNum()
+        public view
+        returns (uint256) 
+    {
+        uint256 totalTokenNum = 0;
+
+        BridgePair[] memory allBridgePairs = getAllBridgePairs();
+
+        uint256 pairSize = allBridgePairs.length;
+        for (uint256 pairIndex = 0; pairIndex < pairSize; pairIndex++) {
+            totalTokenNum += allBridgePairs[pairIndex].parentBridgeTokenSize; 
+            totalTokenNum += allBridgePairs[pairIndex].childBridgeTokenSize; 
+        }
+
+        return totalTokenNum;
+    }
+
+
+    function getAllTokens() 
+        external view 
+        returns (Token[] memory)
+    {
+        uint256 tokenIndex = 0;
+        uint256 tokenSize = getTotalTokensNum(); 
+        Token[] memory tokens = new Token[](tokenSize); 
+
+        BridgePair[] memory allBridgePairs = getAllBridgePairs();
+        
+        uint256 pairSize = allBridgePairs.length;
+        for (uint256 pairIndex = 0; pairIndex < pairSize; pairIndex++) {
+
+            uint256 parentSize = allBridgePairs[pairIndex].parentBridgeTokenSize; 
+            for (uint256 parentIndex = 0; parentIndex < parentSize; parentIndex++) {
+                // tokens[tokenIndex++] = Token({
+                //     tokenAddress :  0x79F970a8456725f1CFB263a899522b629319C680, 
+                //     tokenType : "test",
+                //     name : "test Name", 
+                //     symbol : "test symbol",
+                //     decimals : 18
+                // }); 
+                tokens[tokenIndex++] = Token({
+                    tokenAddress :  allBridgePairs[pairIndex].parentBridgeTokenAddress[parentIndex], 
+                    tokenType : allBridgePairs[pairIndex].parentBridgeTokenType[parentIndex],
+                    name : allBridgePairs[pairIndex].parentBridgeTokenName[parentIndex], 
+                    symbol : allBridgePairs[pairIndex].parentBridgeTokenSymbol[parentIndex],
+                    decimals : allBridgePairs[pairIndex].parentBridgeTokenDecimals[parentIndex]
+                }); 
+            }
+
+            uint256 childSize = allBridgePairs[pairIndex].childBridgeTokenSize; 
+            for (uint256 childIndex = 0; childIndex < childSize; childIndex++) {
+                // tokens[tokenIndex++] = Token({
+                //     tokenAddress :  0x79F970a8456725f1CFB263a899522b629319C680, 
+                //     tokenType : "test",
+                //     name : "test Name", 
+                //     symbol : "test symbol",
+                //     decimals : 18
+                // }); 
+                tokens[tokenIndex++] = Token({
+                    tokenAddress :  allBridgePairs[pairIndex].childBridgeTokenAddress[childIndex], 
+                    tokenType : allBridgePairs[pairIndex].childBridgeTokenType[childIndex],
+                    name : allBridgePairs[pairIndex].childBridgeTokenName[childIndex], 
+                    symbol : allBridgePairs[pairIndex].childBridgeTokenSymbol[childIndex],
+                    decimals : allBridgePairs[pairIndex].childBridgeTokenDecimals[childIndex]
+                }); 
+            }
+        }
+
+        return tokens;
+    }
 
     function getParentTokenAddress(string memory key) 
         external view
@@ -148,6 +221,7 @@ contract ServiceBridge {
         // childBridge info 
         bridgePair.childNetwork = bPair.childNetwork;
         bridgePair.childBridgeAddress = bPair.childBridgeAddress;
+        bridgePair.childBridgeTokenSize = bPair.childBridgeTokenSize;
         bridgePair.childBridgeTokenAddress = bPair.childBridgeTokenAddress;
         bridgePair.childBridgeTokenType = bPair.childBridgeTokenType;
         bridgePair.childBridgeTokenName = bPair.childBridgeTokenName;

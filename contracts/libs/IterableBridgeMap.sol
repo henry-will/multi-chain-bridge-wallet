@@ -57,7 +57,7 @@ library IterableBridgeMap {
         map.values[key].parentNetwork = val.parentNetwork;
         map.values[key].parentBridgeAddress = val.parentBridgeAddress;
         // map.values[key].parentBridgeTokens = val.parentBridgeTokens;            
-        // map.values[key].parentBridgeTokenSize = val.parentBridgeTokenSize;
+        map.values[key].parentBridgeTokenSize = val.parentBridgeTokenSize;
         map.values[key].parentBridgeTokenAddress = val.parentBridgeTokenAddress;            
         map.values[key].parentBridgeTokenType = val.parentBridgeTokenType;            
         map.values[key].parentBridgeTokenName = val.parentBridgeTokenName;            
@@ -67,7 +67,7 @@ library IterableBridgeMap {
         map.values[key].childNetwork = val.childNetwork;
         map.values[key].childBridgeAddress = val.childBridgeAddress;
         // map.values[key].childBridgeTokens = val.childBridgeTokens;
-        // map.values[key].childBridgeTokenSize = val.childBridgeTokenSize;
+        map.values[key].childBridgeTokenSize = val.childBridgeTokenSize;
         map.values[key].childBridgeTokenAddress = val.childBridgeTokenAddress;            
         map.values[key].childBridgeTokenType = val.childBridgeTokenType;            
         map.values[key].childBridgeTokenName = val.childBridgeTokenName;            
@@ -107,9 +107,7 @@ library IterableBridgeMap {
         returns (BridgePair[] memory)
     {
         uint256 totalSize = map.keys.length;
-        BridgePair[] memory allBridgePairs = new BridgePair[](
-            totalSize
-        );
+        BridgePair[] memory allBridgePairs = new BridgePair[](totalSize);
         for (uint256 index = 0; index < totalSize; index++) {
             allBridgePairs[index] = map.values[map.keys[index]];
         }

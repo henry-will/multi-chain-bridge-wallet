@@ -12,7 +12,7 @@ struct BridgePair {
     string parentNetwork;
     address parentBridgeAddress;
     // mapping(uint => Token) parentBridgeTokens; 
-    // uint parentBridgeTokenSize;  
+    uint256 parentBridgeTokenSize;  
     address[] parentBridgeTokenAddress;
     string[] parentBridgeTokenType;
     string[] parentBridgeTokenName;
@@ -24,10 +24,12 @@ struct BridgePair {
     string childNetwork;
     address childBridgeAddress;
     // mapping(uint => Token) childrenBridgeTokens; 
-    // uint childBridgeTokenSize; 
+    uint256 childBridgeTokenSize; 
     address[] childBridgeTokenAddress;
     string[] childBridgeTokenType;
     string[] childBridgeTokenName;
     string[] childBridgeTokenSymbol;
     uint256[] childBridgeTokenDecimals;
+
+    // struct 구조로 바꾸도록 개선... 
 }
