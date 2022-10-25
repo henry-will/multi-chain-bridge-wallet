@@ -12,7 +12,18 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
     // defaultNetwork: "henry",
-    solidity: "0.8.17",
+    // solidity: "0.8.17",
+    solidity: {
+        compilers: [
+            {
+                version: "0.5.6",
+            },
+            {
+                version: "0.8.17",
+                settings: {},
+            },
+        ],
+    },
     networks: {
         henry: {
             chainId: 7212,
