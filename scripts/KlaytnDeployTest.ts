@@ -6,14 +6,14 @@ async function main() {
   const owner = signers[0];
 
   // EN bridge operator
-  const enop = signers[1].address;
-  console.log('\n\nEN operator:', enop);
+  const enop = signers[1];
+  console.log('\n\nEN operator:', enop.address);
 
   // EN bridge 
   const ENbridge = await ethers.getContractFactory("Bridge", {signer: owner});
   const enbridge = await ENbridge.deploy(false);
   await enbridge.deployed();
-  await enbridge.registerOperator(enop);
+  await enbridge.registerOperator(enop.address);
   console.log('EN bridge address: ', enbridge.address);
 
   // EN ERC20 Token
@@ -25,14 +25,14 @@ async function main() {
 
   
   // SCN bridge operator
-  const scop = signers[2].address;
-  console.log('\n\nSCN operator:', scop);
+  const scop = signers[2];
+  console.log('\n\nSCN operator:', scop.address);
 
   // SCN bridge
   const SCbridge = await ethers.getContractFactory("Bridge", {signer: owner});
   const scbridge = await SCbridge.deploy(false);
   await scbridge.deployed();
-  await scbridge.registerOperator(scop);
+  await scbridge.registerOperator(scop.address);
   console.log('SCN bridge address: ', scbridge.address);
 
   // SCN ERC20 Token 
@@ -46,11 +46,11 @@ async function main() {
 
   // EN-SCN pair register
   await enbridge.registerToken(entoken.address, sctoken.address);
-  await enbridge.transferOwnership(enop);
+  await enbridge.transferOwnership(enop.address);
 
   // SCN-EN pair register
   await scbridge.registerToken(sctoken.address, entoken.address);
-  await scbridge.transferOwnership(scop);
+  await scbridge.transferOwnership(scop.address);
 
 
   // console.log(`subbridge.registerBridge("${scbridge.address}", "${enbridge.address}")`)
