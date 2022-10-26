@@ -15,7 +15,7 @@ library IterableBridgeMap {
     function get(Map storage map, string memory key)
         public
         view
-        returns (BridgePair memory)
+        returns (BridgePair storage)
     {
         return map.values[key];
     }
@@ -25,7 +25,7 @@ library IterableBridgeMap {
         view
         returns (bool)
     {
-        BridgePair memory bridgePair = get(map, key);
+        BridgePair memory bridgePair = map.values[key];
         return StringUtil.stringCompare(key, bridgePair.networkKey);
     }
 
@@ -44,16 +44,14 @@ library IterableBridgeMap {
     function set(
         Map storage map,
         string memory key,
-        BridgePair memory val
+        BridgePair storage value
     ) public {
-        if (map.inserted[key]) {
-            map.values[key] = val;
-        } else {
+        if (!map.inserted[key]) {
             map.inserted[key] = true;
-            map.values[key] = val;
             map.indexOf[key] = map.keys.length;
             map.keys.push(key);
         }
+        map.values[key] = value;
     }
 
     function remove(Map storage map, string memory key) public {
@@ -82,15 +80,21 @@ library IterableBridgeMap {
         return lastKey;
     }
 
+    function getKeys(Map storage map)
+        public
+        view
+        returns (string[] memory)
+    {
+        return map.keys;
+    }
+
     function getValues(Map storage map)
         public
         view
         returns (BridgePair[] memory)
     {
         uint256 totalSize = map.keys.length;
-        BridgePair[] memory allBridgePairs = new BridgePair[](
-            totalSize
-        );
+        BridgePair[] memory allBridgePairs = new BridgePair[](totalSize);
         for (uint256 index = 0; index < totalSize; index++) {
             allBridgePairs[index] = map.values[map.keys[index]];
         }

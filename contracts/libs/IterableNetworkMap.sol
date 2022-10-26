@@ -82,6 +82,14 @@ library IterableNetworkMap {
         return lastKey;
     }
 
+    function getKeys(Map storage map)
+        public
+        view
+        returns (string[] memory)
+    {
+        return map.keys;
+    }
+
     function getValues(Map storage map)
         public
         view

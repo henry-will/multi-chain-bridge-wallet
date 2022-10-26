@@ -7,10 +7,12 @@ struct BridgePair {
     string networkKey;
     Bridge parentBridge;
     Bridge childBridge;
+
 }
 
 struct Bridge {
     string name;
     address bridgeAddress;
-    Token registeredTokens;
+    bool depth;
+    Token[] registeredTokens;
 }
