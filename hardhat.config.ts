@@ -11,7 +11,7 @@ import "solidity-coverage";
 dotenv.config();
 
 const config: HardhatUserConfig = {
-    // defaultNetwork: "henry",
+    
     // solidity: "0.8.17",
     solidity: {
         compilers: [
@@ -24,22 +24,37 @@ const config: HardhatUserConfig = {
             },
         ],
     },
+    // defaultNetwork: "mainbridge",
     networks: {
-        henry: {
-            chainId: 7212,
-            url: process.env.HENRY_URL || "",
-            // 0x3e514cd52f16cfe9c992be8fb305c384236564ad
-            accounts: ["0x898e948dca408207e74b8158b02aa24c879327c8a5e604d8d58035d7f19acc5c"],
+        mainbridge: {
+            url: "http://127.0.0.1:8553",
+            // chainId: 1000,
+            // gas: 50000000,
+            // gasPrice: 25000000000,
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                initialIndex: 0,
+            },
+            // operator: '0x9388349e71140c1f099ca8293892ab0d1e151d4f',
+            allowUnlimitedContractSize: true,
         },
-        henry_docker: {
-            chainId: 9999,
-            url: process.env.HENRY_DOCKER_URL || "",
-            accounts: ["0x1dd4dc19688dde6b519f3d305349fa7cbc6f5c4195e72e0d12b665b2bc39a3a1"],
+        subbridge: {
+            url: "http://127.0.0.1:8554",
+            // chainId: 1001,
+            // gas: 50000000,
+            // gasPrice: 25000000000,
+            accounts: {
+                mnemonic: "test test test test test test test test test test test junk",
+                initialIndex: 1,
+            },
+            // operator: '0xcb5e2874276d3a96ab6331cafeb80baa6453eeb0',
+            allowUnlimitedContractSize: true,
         },
-        baobab: {
-            chainId: 1001,
-            url: process.env.KLAYTN_URL || "",
-            accounts: ["0x1dd4dc19688dde6b519f3d305349fa7cbc6f5c4195e72e0d12b665b2bc39a3a1"],
+        hardhat: {
+            accounts: {
+                accountsBalance: '100000000000000000000000000',
+            },
+            allowUnlimitedContractSize: true,
         },
     },
 };
