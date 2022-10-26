@@ -1,22 +1,23 @@
-const hre = require("hardhat");
+import { ethers } from "hardhat";
 
 async function main() {
 
-  const signers = await hre.ethers.getSigners();
+  const signers = await ethers.getSigners();
+  const owner = signers[0];
 
   // EN bridge operator
   const enop = signers[1].address;
   console.log('\n\nEN operator:', enop);
 
   // EN bridge 
-  const ENbridge = await hre.ethers.getContractFactory("Bridge");
+  const ENbridge = await ethers.getContractFactory("Bridge", {signer: owner});
   const enbridge = await ENbridge.deploy(false);
   await enbridge.deployed();
   await enbridge.registerOperator(enop);
   console.log('EN bridge address: ', enbridge.address);
 
   // EN ERC20 Token
-  const ENtoken = await hre.ethers.getContractFactory("ServiceChainToken");
+  const ENtoken = await ethers.getContractFactory("ServiceChainToken", {signer: owner});
   const entoken = await ENtoken.deploy(enbridge.address);
   await entoken.deployed(enbridge.address);
   await entoken.addMinter(enbridge.address);
@@ -28,14 +29,14 @@ async function main() {
   console.log('\n\nSCN operator:', scop);
 
   // SCN bridge
-  const SCbridge = await hre.ethers.getContractFactory("Bridge");
+  const SCbridge = await ethers.getContractFactory("Bridge", {signer: owner});
   const scbridge = await SCbridge.deploy(false);
   await scbridge.deployed();
   await scbridge.registerOperator(scop);
   console.log('SCN bridge address: ', scbridge.address);
 
   // SCN ERC20 Token 
-  const SCtoken = await hre.ethers.getContractFactory("ServiceChainToken");
+  const SCtoken = await ethers.getContractFactory("ServiceChainToken", {signer: owner});
   const sctoken = await SCtoken.deploy(scbridge.address);
   await sctoken.deployed(scbridge.address);
   await sctoken.addMinter(scbridge.address);
@@ -57,7 +58,7 @@ async function main() {
   // console.log(`subbridge.registerToken("${scbridge.address}", "${enbridge.address}", "${sctoken.address}", "${entoken.address}")`)
 
   const alice = '0xc40b6909eb7085590e1c26cb3becc25368e249e9';
-  const bal1 = await entoken.balanceOf(signers[0].address);
+  const bal1 = await entoken.balanceOf(owner.address);
   console.log("signer's balance before requestValueTransfer:", bal1.toString());
   const bal2 = await entoken.balanceOf(enbridge.address);
   console.log("EN bridge's balance before requestValueTransfer:", bal2.toNumber());
@@ -76,7 +77,7 @@ async function main() {
   // bal = await entoken.balanceOf(enbridge.address);
   // console.log("ENbridge balance after requestERC20Transfer:", bal.toNumber());
 
-  const bal5 = await entoken.balanceOf(signers[0].address);
+  const bal5 = await entoken.balanceOf(owner.address);
   console.log("signer's balance after requestValueTransfer:", bal5.toString());
   const bal6 = await entoken.balanceOf(enbridge.address);
   console.log("EN bridge's balance before requestValueTransfer:", bal6.toNumber());
