@@ -3,8 +3,8 @@ import { expect, should, assert } from "chai";
 should();
 import { ethers } from "hardhat";
 
-describe("ServiceNetwork", function () {
-    async function deployServiceNetworkFixture() {
+describe("NetworkService", function () {
+    async function deployNetworkServiceFixture() {
         // Contracts are deployed using the first signer/account by default
         const [owner, otherAccount] = await ethers.getSigners();
 
@@ -21,26 +21,26 @@ describe("ServiceNetwork", function () {
         const lib = await IterableNetworkMap.deploy();
         await lib.deployed();
 
-        const ServiceNetwork = await ethers.getContractFactory("ServiceNetwork", {
+        const NetworkService = await ethers.getContractFactory("NetworkService", {
             signer: owner,
             libraries: {
                 StringUtil: lib2.address,
                 IterableNetworkMap: lib.address,
             }
         });
-        const network = await ServiceNetwork.deploy();
+        const network = await NetworkService.deploy();
 
-        return { ServiceNetwork, network, owner, otherAccount };
+        return { NetworkService, network, owner, otherAccount };
     }
 
     describe("Networks", function () {
         it("should be empty", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             const networks = await network.getAllNetworks();
             expect(0).to.equals(networks.length);
         });
         it("should add one Network", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
             const testNetwork = await network.getNetwork("123:test");
             // console.log("testNetwork is ", testNetwork);
@@ -60,7 +60,7 @@ describe("ServiceNetwork", function () {
 
         });
         it("should find an added Network", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
             const key = await network.getKey("123", "test");
             const testNetwork = await network.getNetwork(key);
@@ -70,7 +70,7 @@ describe("ServiceNetwork", function () {
             await network.deleteNetwork(key);
         });
         it("should delete the added Network", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
             const key = await network.getKey("123", "test");
             key.should.equal("123:test");
@@ -82,14 +82,14 @@ describe("ServiceNetwork", function () {
     });
     describe("Error Tests", function () {
         it("should cause the error because of a different input key", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
             await expect(
                 network.updateNetwork("1234:badkey", "123", "test", "Henry Test", "http://127.0.0.1:7351", 123)
             ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Not Found, current key 1234:badkey is dirrent from 123:test'");
         });
         it("should cause the error because same key is inserted", async function () {
-            const { network } = await loadFixture(deployServiceNetworkFixture);
+            const { network } = await loadFixture(deployNetworkServiceFixture);
             await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
             await expect(
                 network.addNetwork("123", "test", "Henry Test 2", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18)
