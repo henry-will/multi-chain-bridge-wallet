@@ -4,40 +4,47 @@ async function main() {
 
   const signers = await ethers.getSigners();
   const owner = signers[0];
+  console.log( signers[0].address );
+  console.log( signers[1].address );
+  console.log( signers[2].address );
 
   // EN bridge operator
-  const enop = signers[1];
+  const enop = signers[0];
   console.log('\n\nEN operator:', enop.address);
 
   // EN bridge 
   const ENbridge = await ethers.getContractFactory("Bridge", {signer: owner});
-  const enbridge = await ENbridge.deploy(false);
+  // const enbridge = await ENbridge.deploy(false);
+  const enbridge = await ENbridge.deploy(false, {gasLimit: 3e7});
+  console.log('ENbridge deploy');
+  
   await enbridge.deployed();
+  console.log('ENbridge deployed');
   await enbridge.registerOperator(enop.address);
   console.log('EN bridge address: ', enbridge.address);
 
   // EN ERC20 Token
-  const ENtoken = await ethers.getContractFactory("ServiceChainToken", {signer: owner});
-  const entoken = await ENtoken.deploy(enbridge.address);
+  const ENtoken = await ethers.getContractFactory("ServiceChainToken");
+  const entoken = await ENtoken.deploy(enbridge.address, {gasLimit: 3e7});
   await entoken.deployed(enbridge.address);
   await entoken.addMinter(enbridge.address);
   console.log('EN Token address: ', entoken.address);
 
   
   // SCN bridge operator
-  const scop = signers[2];
+  const scop = signers[0];
   console.log('\n\nSCN operator:', scop.address);
 
   // SCN bridge
-  const SCbridge = await ethers.getContractFactory("Bridge", {signer: owner});
-  const scbridge = await SCbridge.deploy(false);
+  const SCbridge = await ethers.getContractFactory("Bridge");
+  const scbridge = await SCbridge.deploy(false, {gasLimit: 3e7});
   await scbridge.deployed();
   await scbridge.registerOperator(scop.address);
   console.log('SCN bridge address: ', scbridge.address);
 
   // SCN ERC20 Token 
-  const SCtoken = await ethers.getContractFactory("ServiceChainToken", {signer: owner});
-  const sctoken = await SCtoken.deploy(scbridge.address);
+  const SCtoken = await ethers.getContractFactory("ServiceChainToken");
+  const sctoken = await SCtoken.deploy(scbridge.address, {gasLimit: 3e7});
   await sctoken.deployed(scbridge.address);
   await sctoken.addMinter(scbridge.address);
   console.log('SCN Token address: ', sctoken.address);
