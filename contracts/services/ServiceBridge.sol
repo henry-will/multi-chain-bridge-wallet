@@ -40,7 +40,7 @@ contract ServiceBridge {
         bridgePair.childBridgeAddress = _childBridgeAddress;
         bridgePair.childBridgeTokenSize = 0;
         bridgePair.childBridgeTokenAddress = new address[](0);
-        bridgePair.childBridgeTokenType = new string[](0);
+        bridgePair.childBridgeTokenType = new TokenType[](0);
         bridgePair.childBridgeTokenName = new string[](0);
         bridgePair.childBridgeTokenSymbol = new string[](0); 
         bridgePair.childBridgeTokenDecimals = new uint256[](0);
@@ -63,7 +63,7 @@ contract ServiceBridge {
         uint256 length = tokenContracts.length; 
 
         address[] memory _pTokenAddress = new address[]( length ); 
-        string[] memory _pTokenType = new string[]( length ); 
+        TokenType[] memory _pTokenType = new TokenType[]( length ); 
         string[] memory _pTokenName = new string[]( length );  
         string[] memory _pTokenSymbol = new string[]( length );
         uint256[] memory _pTokenDecimals = new uint256[]( length );
@@ -76,7 +76,7 @@ contract ServiceBridge {
 
                 if ( tokenContract.supportsInterface(type(IERC20Token).interfaceId) ) {
                     _pTokenAddress[i] = tokenAddress ;
-                    _pTokenType[i] = "TokenType.ERC20" ;
+                    _pTokenType[i] = TokenType.ERC20 ;
                     _pTokenName[i] = tokenContract.NAME() ;
                     _pTokenSymbol[i] = tokenContract.SYMBOL() ;
                     _pTokenDecimals[i] = tokenContract.DECIMALS() ;    
@@ -85,7 +85,7 @@ contract ServiceBridge {
                 IERC721Token tokenContract2 = IERC721Token(tokenAddress);
                 if ( tokenContract2.supportsInterface(type(IERC721Token).interfaceId) ) {
                     _pTokenAddress[i] = tokenAddress ;
-                    _pTokenType[i] = "TokenType.ERC721" ;
+                    _pTokenType[i] = TokenType.ERC721 ;
                     _pTokenName[i] = tokenContract2.NAME() ;
                     _pTokenSymbol[i] = "na" ;
                     _pTokenDecimals[i] = 0 ;    
@@ -104,6 +104,12 @@ contract ServiceBridge {
     }
 
     function isContract(address addr) internal view returns (bool) {
+        uint size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
+    }
+
+    function getContractType(address addr) internal view returns (bool) {
         uint size;
         assembly { size := extcodesize(addr) }
         return size > 0;
@@ -167,7 +173,7 @@ contract ServiceBridge {
             for (uint256 parentIndex = 0; parentIndex < parentSize; parentIndex++) {
                 // tokens[tokenIndex++] = Token({
                 //     tokenAddress :  0x79F970a8456725f1CFB263a899522b629319C680, 
-                //     tokenType : "test",
+                //     tokenType : TokenType.ERC20,
                 //     name : "test Name", 
                 //     symbol : "test symbol",
                 //     decimals : 18
@@ -185,7 +191,7 @@ contract ServiceBridge {
             for (uint256 childIndex = 0; childIndex < childSize; childIndex++) {
                 // tokens[tokenIndex++] = Token({
                 //     tokenAddress :  0x79F970a8456725f1CFB263a899522b629319C680, 
-                //     tokenType : "test",
+                //     tokenType : TokenType.ERC20,
                 //     name : "test Name", 
                 //     symbol : "test symbol",
                 //     decimals : 18

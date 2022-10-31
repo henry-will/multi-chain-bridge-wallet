@@ -14,7 +14,7 @@ struct BridgePair {
     // mapping(uint => Token) parentBridgeTokens; 
     uint256 parentBridgeTokenSize;  
     address[] parentBridgeTokenAddress;
-    string[] parentBridgeTokenType;
+    TokenType[] parentBridgeTokenType;
     string[] parentBridgeTokenName;
     string[] parentBridgeTokenSymbol;
     uint256[] parentBridgeTokenDecimals;
@@ -26,7 +26,7 @@ struct BridgePair {
     // mapping(uint => Token) childrenBridgeTokens; 
     uint256 childBridgeTokenSize; 
     address[] childBridgeTokenAddress;
-    string[] childBridgeTokenType;
+    TokenType[] childBridgeTokenType;
     string[] childBridgeTokenName;
     string[] childBridgeTokenSymbol;
     uint256[] childBridgeTokenDecimals;
