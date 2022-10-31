@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-interface IERC20Token {
+interface IERC721Token {
     function NAME() external view returns (string memory);
 
-    function SYMBOL() external view returns (string memory);
-
-    function DECIMALS() external view returns (uint8);
+    function TokenURI(uint256 tokenId) external view returns (string memory);
 
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }

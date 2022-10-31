@@ -15,7 +15,8 @@ enum TokenType {
 
 struct Token {
     address tokenAddress;
-    string tokenType;
+    string tokenType;  // 식별방법? 배포 후에 식별자...
+    // https://stackoverflow.com/questions/45364197/how-to-detect-if-an-ethereum-address-is-an-erc20-token-contract
 
     // IERC20Token feature
     string name;

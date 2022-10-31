@@ -3,6 +3,7 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "../interfaces/IBridgeTokens.sol";
 import "../interfaces/IERC20Token.sol";
+import "../interfaces/IERC721Token.sol";
 
 import "../models/TokenModel.sol";
 import "../models/BridgeModel.sol";
@@ -69,13 +70,27 @@ contract ServiceBridge {
 
         for (uint256 i = 0; i < length; i++) {
             address tokenAddress = tokenContracts[i];
-            IERC20Token tokenContract = IERC20Token(tokenAddress);
-            
-            _pTokenAddress[i] = tokenAddress ;
-            _pTokenType[i] = "TokenType.ERC20" ;
-            _pTokenName[i] = tokenContract.NAME() ;
-            _pTokenSymbol[i] = tokenContract.SYMBOL() ;
-            _pTokenDecimals[i] = tokenContract.DECIMALS() ;
+
+            if (isContract(tokenAddress)){ 
+                IERC20Token tokenContract = IERC20Token(tokenAddress);
+
+                if ( tokenContract.supportsInterface(type(IERC20Token).interfaceId) ) {
+                    _pTokenAddress[i] = tokenAddress ;
+                    _pTokenType[i] = "TokenType.ERC20" ;
+                    _pTokenName[i] = tokenContract.NAME() ;
+                    _pTokenSymbol[i] = tokenContract.SYMBOL() ;
+                    _pTokenDecimals[i] = tokenContract.DECIMALS() ;    
+                } 
+
+                IERC721Token tokenContract2 = IERC721Token(tokenAddress);
+                if ( tokenContract2.supportsInterface(type(IERC721Token).interfaceId) ) {
+                    _pTokenAddress[i] = tokenAddress ;
+                    _pTokenType[i] = "TokenType.ERC721" ;
+                    _pTokenName[i] = tokenContract2.NAME() ;
+                    _pTokenSymbol[i] = "na" ;
+                    _pTokenDecimals[i] = 0 ;    
+                }
+            }
         }
 
         bridgePair.parentBridgeTokenSize = length;
@@ -86,6 +101,12 @@ contract ServiceBridge {
         bridgePair.parentBridgeTokenDecimals = _pTokenDecimals;   
 
         return bridgePair;     
+    }
+
+    function isContract(address addr) internal view returns (bool) {
+        uint size;
+        assembly { size := extcodesize(addr) }
+        return size > 0;
     }
 
 

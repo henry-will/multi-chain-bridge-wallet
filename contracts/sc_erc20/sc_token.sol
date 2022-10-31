@@ -24,13 +24,31 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "./ERC20ServiceChain.sol";
 
 
+
+
 contract ServiceChainToken is ERC20, ERC20Mintable, ERC20Burnable, ERC20ServiceChain {
+
     string public constant NAME = "ServiceChainToken";
     string public constant SYMBOL = "SCT";
     uint8 public constant DECIMALS = 18;
+    string public constant TokenTYPE = "TokenType.ERC20";
 
     // one billion in initial supply
     uint256 public constant INITIAL_SUPPLY = 1000000000 * (10 ** uint256(DECIMALS));
+
+    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+        return interfaceId == 0x7b6bbd84;
+        // type(IERC20Token).interfaceId == 0x7b6bbd84
+        // not supported under solidity 0.8.0
+        // https://velog.io/@4e5ung/ERC721-ERC1155-%EA%B5%AC%EB%B6%84
+        
+        // interface IERC20Token {
+        //     function NAME() external view returns (string memory);
+        //     function SYMBOL() external view returns (string memory);
+        //     function DECIMALS() external view returns (uint8);
+        //     function supportsInterface(bytes4 interfaceId) external view returns (bool);
+        // }
+    }
 
     constructor(address _bridge) ERC20ServiceChain(_bridge) public {
         _mint(msg.sender, INITIAL_SUPPLY);

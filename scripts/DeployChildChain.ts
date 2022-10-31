@@ -9,17 +9,13 @@ async function main() {
   console.log( signers[2].address );
 
   // EN bridge operator
-  const enop = signers[0];
+  const enop = signers[1];
   console.log('\n\nEN operator:', enop.address);
 
   // EN bridge 
-  const ENbridge = await ethers.getContractFactory("Bridge", {signer: owner});
-  // const enbridge = await ENbridge.deploy(false);
-  const enbridge = await ENbridge.deploy(false, {gasLimit: 3e7});
-  console.log('ENbridge deploy');
-  
+  const ENbridge = await ethers.getContractFactory("Bridge");
+  const enbridge = await ENbridge.deploy(false);
   await enbridge.deployed();
-  console.log('ENbridge deployed');
   await enbridge.registerOperator(enop.address);
   console.log('EN bridge address: ', enbridge.address);
 
@@ -32,7 +28,7 @@ async function main() {
 
   
   // SCN bridge operator
-  const scop = signers[0];
+  const scop = signers[2];
   console.log('\n\nSCN operator:', scop.address);
 
   // SCN bridge
@@ -87,7 +83,7 @@ async function main() {
   const bal5 = await entoken.balanceOf(owner.address);
   console.log("signer's balance after requestValueTransfer:", bal5.toString());
   const bal6 = await entoken.balanceOf(enbridge.address);
-  console.log("EN bridge's balance before requestValueTransfer:", bal6.toNumber());
+  console.log("EN bridge's balance after requestValueTransfer:", bal6.toNumber());
   const bal7 = await entoken.balanceOf(entoken.address);
   console.log("EN Token's balance after requestValueTransfer:", bal7.toNumber());
   const bal8 = await entoken.balanceOf(alice);

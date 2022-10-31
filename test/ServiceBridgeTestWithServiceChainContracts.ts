@@ -46,6 +46,13 @@ describe("ServiceBridge", function () {
         await entoken.addMinter(enbridge.address);
         console.log('EN Token address: ', entoken.address);
 
+        // EN ERC721 Token 
+        const ENtoken2 = await ethers.getContractFactory("ServiceChainNFT", {signer: owner});
+        const entoken2 = await ENtoken2.deploy(enbridge.address);
+        await entoken2.deployed(enbridge.address);
+        await entoken2.addMinter(enbridge.address);
+        console.log('EN NFT Token address: ', entoken2.address);
+
         // SCN bridge
         const SCbridge = await ethers.getContractFactory("Bridge", {signer: owner});
         const scbridge = await SCbridge.deploy(false);
@@ -59,14 +66,23 @@ describe("ServiceBridge", function () {
         await sctoken.deployed(scbridge.address);
         await sctoken.addMinter(scbridge.address);
         console.log('SCN Token address: ', sctoken.address);
+
+        // SCN ERC721 Token
+        const SCtoken2 = await ethers.getContractFactory("ServiceChainNFT", {signer: owner});
+        const sctoken2 = await SCtoken2.deploy(scbridge.address);
+        await sctoken2.deployed(scbridge.address);
+        await sctoken2.addMinter(scbridge.address);
+        console.log('SCN NFT Token address: ', sctoken2.address);
         console.log('\n\n');
 
         // EN-SCN pair register
         await enbridge.registerToken(entoken.address, sctoken.address);
+        await enbridge.registerToken(entoken2.address, sctoken2.address);
         await enbridge.transferOwnership(enop.address);
 
         // SCN-EN pair register
         await scbridge.registerToken(sctoken.address, entoken.address);
+        await scbridge.registerToken(sctoken2.address, entoken2.address);
         await scbridge.transferOwnership(scop.address);
 
         return { bridge, enbridge, entoken, scbridge, sctoken, owner, enop, scop };
@@ -80,6 +96,7 @@ describe("ServiceBridge", function () {
             
             await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
             const allBridges = await bridge.getAllBridgePairs();
+            console.log( "Bridge pair list", allBridges );
             expect(1).to.equals(allBridges.length);
             expect("testBridge1@testchildNetwork:1003").to.equals(allBridges[0].key);
         });
@@ -92,7 +109,7 @@ describe("ServiceBridge", function () {
             await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
             const allTokens = await bridge.getAllTokens();
             console.log( "tokens list", allTokens );
-            expect(1).to.equals(allTokens.length);            
+            expect(2).to.equals(allTokens.length);            
         });
     });    
 });

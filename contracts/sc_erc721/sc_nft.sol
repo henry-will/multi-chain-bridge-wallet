@@ -25,7 +25,28 @@ import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "./ERC721ServiceChain.sol";
 
 
+
 contract ServiceChainNFT is ERC721Full("ServiceChainNFT", "SCN"), ERC721Burnable, ERC721MetadataMintable, ERC721ServiceChain {
+
+    string public constant NAME = "ServiceChainToken NFT";
+    string public constant SYMBOL = "SCTNFT";
+    uint8 public constant DECIMALS = 0;
+    string public constant TokenTYPE = "TokenType.ERC721";
+    string public constant TokenURI = "ServiceChainToken.nft";
+
+    function supportsInterface(bytes4 interfaceId) public view returns (bool) {
+        return interfaceId == 0xc78080bc ;
+        // type(IERC721Token).interfaceId == 0xc78080bc 
+        // not supported under solidity 0.8.0
+        // https://velog.io/@4e5ung/ERC721-ERC1155-%EA%B5%AC%EB%B6%84
+        
+        // interface IERC721Token {
+        //     function NAME() external view returns (string memory);
+        //     function TokenURI(uint256 tokenId) external view returns (string memory);
+        //     function supportsInterface(bytes4 interfaceId) external view returns (bool);
+        // }
+    }
+
     constructor(address _bridge) ERC721ServiceChain(_bridge) public {
     }
 

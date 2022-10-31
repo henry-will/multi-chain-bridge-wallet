@@ -35,7 +35,7 @@ const config: HardhatUserConfig = {
             },
         ],
     },
-    // defaultNetwork: "mainbridge",
+    defaultNetwork: "hardhat",
     networks: {
         mainbridge: {
             url: "http://127.0.0.1:8553",
