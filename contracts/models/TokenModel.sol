@@ -15,9 +15,11 @@ enum TokenType {
 
 struct Token {
     address tokenAddress;
-    TokenType tokenType;  // 식별방법? 배포 후에 식별자...
+    
+    // ERC-165 has to be supported, for auto type detection with address
     // https://stackoverflow.com/questions/45364197/how-to-detect-if-an-ethereum-address-is-an-erc20-token-contract
-
+    TokenType tokenType;  
+    
     // IERC20Token feature
     string name;
     string symbol;

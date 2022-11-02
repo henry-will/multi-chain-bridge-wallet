@@ -8,28 +8,37 @@ struct BridgePair {
     string key;
     string name;
 
-    // parent bridge info 
-    string parentNetwork;
-    address parentBridgeAddress;
-    // mapping(uint => Token) parentBridgeTokens; 
-    uint256 parentBridgeTokenSize;  
-    address[] parentBridgeTokenAddress;
-    TokenType[] parentBridgeTokenType;
-    string[] parentBridgeTokenName;
-    string[] parentBridgeTokenSymbol;
-    uint256[] parentBridgeTokenDecimals;
+    // // parent bridge info 
+    // string parentNetwork;
+    // address parentBridgeAddress;
+    // // mapping(uint => Token) parentBridgeTokens; 
+    // uint256 parentBridgeTokenSize;  
+    // address[] parentBridgeTokenAddress;
+    // TokenType[] parentBridgeTokenType;
+    // string[] parentBridgeTokenName;
+    // string[] parentBridgeTokenSymbol;
+    // uint256[] parentBridgeTokenDecimals;
 
 
-    // child bridge info 
-    string childNetwork;
-    address childBridgeAddress;
-    // mapping(uint => Token) childrenBridgeTokens; 
-    uint256 childBridgeTokenSize; 
-    address[] childBridgeTokenAddress;
-    TokenType[] childBridgeTokenType;
-    string[] childBridgeTokenName;
-    string[] childBridgeTokenSymbol;
-    uint256[] childBridgeTokenDecimals;
+    // // child bridge info 
+    // string childNetwork;
+    // address childBridgeAddress;
+    // // mapping(uint => Token) childrenBridgeTokens; 
+    // uint256 childBridgeTokenSize; 
+    // address[] childBridgeTokenAddress;
+    // TokenType[] childBridgeTokenType;
+    // string[] childBridgeTokenName;
+    // string[] childBridgeTokenSymbol;
+    // uint256[] childBridgeTokenDecimals;
 
-    // struct 구조로 바꾸도록 개선... 
+    // struct 구조
+    Bridge parentBridge;
+    Bridge childBridge;
+}
+
+struct Bridge {
+    string name;
+    address bridgeAddress;
+    bool depth;
+    Token[] registeredTokens;
 }

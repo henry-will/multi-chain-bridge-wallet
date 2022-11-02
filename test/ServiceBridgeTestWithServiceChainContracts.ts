@@ -109,7 +109,7 @@ describe("ServiceBridge", function () {
             await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
             const allTokens = await bridge.getAllTokens();
             console.log( "tokens list", allTokens );
-            expect(2).to.equals(allTokens.length);            
+            expect(4).to.equals(allTokens.length);            
         });
     });    
 });

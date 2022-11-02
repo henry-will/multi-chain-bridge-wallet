@@ -84,41 +84,41 @@ describe("ServiceBridge", function () {
             const allBridges3 = await bridge.getAllBridgePairs();
             expect(0).to.equals(allBridges3.length);
         });
-        it("Token Address List", async function () {
-            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+        // it("Token Address List", async function () {
+        //     const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
     
-            const pAddress = await tokenListCallTest.getParent(); 
-            // console.log("pAddress", pAddress);
-            const cAddress = await tokenListCallTest.getChild(); 
-            // console.log("cAddress", cAddress);
+        //     const pAddress = await tokenListCallTest.getParent(); 
+        //     // console.log("pAddress", pAddress);
+        //     const cAddress = await tokenListCallTest.getChild(); 
+        //     // console.log("cAddress", cAddress);
 
-            await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
-            const tokens = await bridge.getParentTokenAddress("testBridge@testchildNetwork:1003");
-            console.log( "token addresses", tokens );
-            expect(2).to.equals(tokens.length);
-        });
-        it("Token Name List", async function () {
-            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+        //     await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
+        //     const tokens = await bridge.getParentTokenAddress("testBridge@testchildNetwork:1003");
+        //     console.log( "token addresses", tokens );
+        //     expect(2).to.equals(tokens.length);
+        // });
+        // it("Token Name List", async function () {
+        //     const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
              
-            const pAddress = await tokenListCallTest.getParent(); 
-            const cAddress = await tokenListCallTest.getChild(); 
+        //     const pAddress = await tokenListCallTest.getParent(); 
+        //     const cAddress = await tokenListCallTest.getChild(); 
 
-            await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
-            const tokens = await bridge.getParentTokenName("testBridge@testchildNetwork:1003");
-            console.log( "token names", tokens );
-            expect(2).to.equals(tokens.length);
-        });
-        it("Token Symbol List", async function () {
-            const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
+        //     await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
+        //     const tokens = await bridge.getParentTokenName("testBridge@testchildNetwork:1003");
+        //     console.log( "token names", tokens );
+        //     expect(2).to.equals(tokens.length);
+        // });
+        // it("Token Symbol List", async function () {
+        //     const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
             
-            const pAddress = await tokenListCallTest.getParent(); 
-            const cAddress = await tokenListCallTest.getChild(); 
+        //     const pAddress = await tokenListCallTest.getParent(); 
+        //     const cAddress = await tokenListCallTest.getChild(); 
 
-            await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
-            const tokens = await bridge.getParentTokenSymbol("testBridge@testchildNetwork:1003");
-            console.log( "token symbols", tokens );
-            expect(2).to.equals(tokens.length);
-        });
+        //     await bridge.addBridgePair( "testBridge", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
+        //     const tokens = await bridge.getParentTokenSymbol("testBridge@testchildNetwork:1003");
+        //     console.log( "token symbols", tokens );
+        //     expect(2).to.equals(tokens.length);
+        // });
         it("Update Token List", async function () {
             const { bridge, tokenListCallTest } = await loadFixture(deployServiceBridgeFixture);
             
