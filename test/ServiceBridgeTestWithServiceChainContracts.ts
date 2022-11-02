@@ -98,7 +98,7 @@ describe("ServiceBridge", function () {
             const allBridges = await bridge.getAllBridgePairs();
             console.log( "Bridge pair list", allBridges );
             expect(1).to.equals(allBridges.length);
-            expect("testBridge1@testchildNetwork:1003").to.equals(allBridges[0].key);
+            expect("testBridge1@Cypress&testchildNetwork:1003").to.equals(allBridges[0].key);
         });
         it("Get All Token List", async function () {
             const { bridge, enbridge, entoken, scbridge, sctoken, owner, enop, scop  } = await loadFixture(deployServiceBridgeFixture);

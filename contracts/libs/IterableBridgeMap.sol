@@ -49,30 +49,7 @@ library IterableBridgeMap {
             map.keys.push(key);
         }
 
-        map.values[key] = val;
-
-        // map.values[key].key = val.key;
-        // map.values[key].name = val.name;
-
-        // map.values[key].parentNetwork = val.parentNetwork;
-        // map.values[key].parentBridgeAddress = val.parentBridgeAddress;
-        // // map.values[key].parentBridgeTokens = val.parentBridgeTokens;            
-        // map.values[key].parentBridgeTokenSize = val.parentBridgeTokenSize;
-        // map.values[key].parentBridgeTokenAddress = val.parentBridgeTokenAddress;            
-        // map.values[key].parentBridgeTokenType = val.parentBridgeTokenType;            
-        // map.values[key].parentBridgeTokenName = val.parentBridgeTokenName;            
-        // map.values[key].parentBridgeTokenSymbol = val.parentBridgeTokenSymbol;            
-        // map.values[key].parentBridgeTokenDecimals = val.parentBridgeTokenDecimals;            
-
-        // map.values[key].childNetwork = val.childNetwork;
-        // map.values[key].childBridgeAddress = val.childBridgeAddress;
-        // // map.values[key].childBridgeTokens = val.childBridgeTokens;
-        // map.values[key].childBridgeTokenSize = val.childBridgeTokenSize;
-        // map.values[key].childBridgeTokenAddress = val.childBridgeTokenAddress;            
-        // map.values[key].childBridgeTokenType = val.childBridgeTokenType;            
-        // map.values[key].childBridgeTokenName = val.childBridgeTokenName;            
-        // map.values[key].childBridgeTokenSymbol = val.childBridgeTokenSymbol;            
-        // map.values[key].childBridgeTokenDecimals = val.childBridgeTokenDecimals;            
+        map.values[key] = val;        
     }
 
     function remove(Map storage map, string memory key) public 
