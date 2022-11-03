@@ -111,5 +111,59 @@ describe("ServiceBridge", function () {
             console.log( "tokens list", allTokens );
             expect(4).to.equals(allTokens.length);            
         });
+        it("Transfer value", async function () {
+            const { bridge, enbridge, entoken, scbridge, sctoken, owner, enop, scop  } = await loadFixture(deployServiceBridgeFixture);
+
+            const pAddress = enbridge.address; 
+            const cAddress = scbridge.address; 
+            const alice = '0xc40b6909eb7085590e1c26cb3becc25368e249e9';            
+
+            await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
+            const allBridges = await bridge.getAllBridgePairs();
+
+            let i, j : number;
+            let sel : Token;
+
+            // transfer value from all tokens in parentBridge
+            for ( i=0; i < allBridges.length ; i++) {
+
+                const jLength = allBridges[i].parentBridge.registeredTokens.length;
+                
+                for ( j=0 ; j < jLength ; j++) {
+                                        
+                    // Print token info 
+                    sel = allBridges[i].parentBridge.registeredTokens[j];      
+                    console.log( '\n(' + i + ',' + j + ')\n' + sel);
+
+                    // TokenType.ERC20
+                    if ( sel.tokenType == 0 ) {
+                        const ENtoken = await ethers.getContractFactory("ServiceChainToken");
+                        const entoken = await ENtoken.attach( sel.tokenAddress );
+
+                        const tx = await entoken.requestValueTransfer(100, alice, 0, []);
+                        console.log( tx );
+                    }
+                    // TokenType.ERC721
+                    else if ( sel.tokenType == 1 ) {
+                        const ENtoken2 = await ethers.getContractFactory("ServiceChainNFT");
+                        const entoken2 = await ENtoken2.attach( sel.tokenAddress );
+
+                        // const tokenURI = "https://www.klaytn.com";
+                        // const tokenId = "testID";
+
+                        // await enInstance.methods.mintWithTokenURI(conf.parent.sender, tokenId, tokenURI).send({from: conf.parent.sender, gas:1000000});
+                        // let owner = await enInstance.methods.ownerOf(tokenId).call();
+                        // console.log(`Current owner: ${owner}`);
+                        
+                        // console.log(`Transfer the tokenId (${tokenId}) to ${alice}`);
+                        // // Transfer main chain to service chain
+                        // await enInstance.methods.requestValueTransfer(tokenId, alice, []).send({from: conf.parent.sender, gas:1000000});
+
+                        // const tx = await entoken.requestValueTransfer(100, alice, 0, []);
+                        // console.log( tx );
+                    }
+                } // j
+            } // i 
+        });
     });    
 });
