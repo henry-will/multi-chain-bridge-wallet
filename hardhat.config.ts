@@ -44,8 +44,6 @@ const config: HardhatUserConfig = {
             gasPrice: 0,
             accounts:[
                 '0xb79333fd93bd5f5c3a9f791f2d9ce0e3a92570d8a0c1bef0db5316d845b25784',
-                '0x4b07ca7412ad2bb0e62db30369b9f08a8724fb81fce4b3b1af23800233074fbf',
-                '0xc544b44c1c58955af516c1f2ff17f8fd522604f1ea6b64db79e067343ed5e307',
                 ], 
             // accounts: {
             //     mnemonic: "test test test test test test test test test test test junk",
@@ -56,13 +54,18 @@ const config: HardhatUserConfig = {
         },
         subbridge: {
             url: "http://127.0.0.1:8554",
-            chainId: 1001,
+            chainId: 2000,
+            gas: 30000000,
+            gasPrice: 0,
             // gas: 50000000,
             // gasPrice: 25000000000,
-            accounts: {
-                mnemonic: "test test test test test test test test test test test junk",
-                initialIndex: 1,
-            },
+            accounts:[
+                '0x7d621cc7cac4a95adf52f7e5be05c06945ecd967f84242fbd9271da2f611a7d9',
+                ], 
+            // accounts: {
+            //     mnemonic: "test test test test test test test test test test test junk",
+            //     initialIndex: 1,
+            // },
             // operator: '0xcb5e2874276d3a96ab6331cafeb80baa6453eeb0',
             allowUnlimitedContractSize: true,
         },
