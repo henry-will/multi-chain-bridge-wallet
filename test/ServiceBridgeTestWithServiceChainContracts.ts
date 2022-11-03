@@ -145,22 +145,22 @@ describe("ServiceBridge", function () {
                     }
                     // TokenType.ERC721
                     else if ( sel.tokenType == 1 ) {
-                        const ENtoken2 = await ethers.getContractFactory("ServiceChainNFT");
-                        const entoken2 = await ENtoken2.attach( sel.tokenAddress );
+                        const ENtoken721 = await ethers.getContractFactory("ServiceChainNFT");
+                        const entoken721 = await ENtoken721.attach( sel.tokenAddress );
 
-                        // const tokenURI = "https://www.klaytn.com";
-                        // const tokenId = "testID";
+                        const tokenURI = "https://www.klaytn.com";
+                        const tokenId = "12345";
 
-                        // await enInstance.methods.mintWithTokenURI(conf.parent.sender, tokenId, tokenURI).send({from: conf.parent.sender, gas:1000000});
-                        // let owner = await enInstance.methods.ownerOf(tokenId).call();
-                        // console.log(`Current owner: ${owner}`);
+                        // await entoken721.mintWithTokenURI(owner, tokenId, tokenURI).send({from: owner.address, gas:1000000});
+                        await entoken721.mintWithTokenURI(owner.address, tokenId, tokenURI);
+                        let owned = await entoken721.ownerOf(tokenId);
+                        console.log(`Current owner: ${owned}`);
                         
-                        // console.log(`Transfer the tokenId (${tokenId}) to ${alice}`);
-                        // // Transfer main chain to service chain
-                        // await enInstance.methods.requestValueTransfer(tokenId, alice, []).send({from: conf.parent.sender, gas:1000000});
-
-                        // const tx = await entoken.requestValueTransfer(100, alice, 0, []);
-                        // console.log( tx );
+                        console.log(`Transfer the tokenId (${tokenId}) to ${alice}`);
+                        // Transfer main chain to service chain
+                        // const tx = await entoken721.requestValueTransfer(tokenId, alice, []).send({from: owner.address, gas:1000000});
+                        const tx = await entoken721.requestValueTransfer(tokenId, alice, []);
+                        console.log( tx );
                     }
                 } // j
             } // i 
