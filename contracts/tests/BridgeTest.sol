@@ -35,6 +35,10 @@ contract ChildBridgeTest {
         tokens.push(address(token04));
     }
 
+    function add( address token ) external {
+        tokens.push( token );
+    }
+
     function getRegisteredTokenList() external view returns (address[] memory) {
         return tokens;
     }

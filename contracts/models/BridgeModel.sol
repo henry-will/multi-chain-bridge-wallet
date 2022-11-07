@@ -8,9 +8,15 @@ struct BridgePair {
     string key;
     string name;
 
-    // struct 구조
-    Bridge parentBridge;
-    Bridge childBridge;
+    // // struct 구조
+    // Bridge parentBridge;
+    // Bridge childBridge;
+
+    string parentBridgeName;
+    address parentBridgeAddress;
+    string childBridgeName;
+    address childBridgeAddress;
+    TokenPair[] tokenPairs;
 }
 
 struct Bridge {

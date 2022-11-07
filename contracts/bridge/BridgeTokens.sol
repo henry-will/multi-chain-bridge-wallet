@@ -53,6 +53,19 @@ contract BridgeTokens is Ownable {
         return registeredTokenList;
     }
 
+    // have to be implemented
+    function getRegisteredChildTokenList() external returns(address[] memory) {
+        address[] memory registeredChildTokenList = new address[](registeredTokenList.length);
+        address temp;
+
+        for (uint256 i = 0; i < registeredTokenList.length; i++) {
+            temp = registeredTokenList[i]; 
+            registeredChildTokenList[i] = registeredTokens[temp];
+        }
+
+        return registeredChildTokenList;
+    }
+
     // registerToken can update the allowed token with the counterpart token.
     function registerToken(address _token, address _cToken)
         external

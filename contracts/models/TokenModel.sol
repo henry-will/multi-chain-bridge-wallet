@@ -13,6 +13,11 @@ enum TokenType {
     KLAY
 }
 
+struct TokenPair {
+    Token parentToken;
+    Token childToken;
+}
+
 struct Token {
     address tokenAddress;
     

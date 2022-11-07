@@ -100,9 +100,9 @@ describe("ServiceBridge", function () {
             const allTokenNum = await bridge.getTotalTokensNum();
             console.log( "tokens number : ", allTokenNum );        
             expect(14).to.equals(allTokenNum);
-            const allTokens = await bridge.getAllTokens();
-            console.log( "tokens list", allTokens );
-            expect(14).to.equals(allTokens.length);
+            const allTokenPairs = await bridge.getAllTokenPairs();
+            console.log( "tokens list", allTokenPairs );
+            expect(14).to.equals(allTokenPairs.length);
             
         });
     });    

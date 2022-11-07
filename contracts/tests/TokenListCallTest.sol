@@ -62,6 +62,9 @@ contract TokenListCallTest {
 
         parentTest.add(address(token05));
         parentTest.add(address(token06));
+
+        childTest.add(address(token05));
+        childTest.add(address(token06));
     }
 
     function findTokenList() public view returns (Token[] memory) {

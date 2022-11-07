@@ -6,5 +6,6 @@ interface IERC721Token {
 
     function TokenURI(uint256 tokenId) external view returns (string memory);
 
+    // must have to be implemented
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }

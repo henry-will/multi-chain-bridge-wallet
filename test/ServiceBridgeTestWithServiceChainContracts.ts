@@ -100,16 +100,16 @@ describe("ServiceBridge", function () {
             expect(1).to.equals(allBridges.length);
             expect("testBridge1@Cypress&testchildNetwork:1003").to.equals(allBridges[0].key);
         });
-        it("Get All Token List", async function () {
+        it("getAllTokenPairs", async function () {
             const { bridge, enbridge, entoken, scbridge, sctoken, owner, enop, scop  } = await loadFixture(deployServiceBridgeFixture);
 
             const pAddress = enbridge.address; 
             const cAddress = scbridge.address; 
             
             await bridge.addBridgePair( "testBridge1", "Cypress", pAddress, "testchildNetwork:1003", cAddress  );
-            const allTokens = await bridge.getAllTokens();
-            console.log( "tokens list", allTokens );
-            expect(4).to.equals(allTokens.length);            
+            const allTokenPairs = await bridge.getAllTokenPairs();
+            console.log( "TokenPair list", allTokenPairs );
+            expect(2).to.equals(allTokenPairs.length);            
         });
         it("Transfer value", async function () {
             const { bridge, enbridge, entoken, scbridge, sctoken, owner, enop, scop  } = await loadFixture(deployServiceBridgeFixture);
@@ -127,12 +127,12 @@ describe("ServiceBridge", function () {
             // transfer value from all tokens in parentBridge
             for ( i=0; i < allBridges.length ; i++) {
 
-                const jLength = allBridges[i].parentBridge.registeredTokens.length;
+                const jLength = allBridges[i].tokenPairs.length;
                 
                 for ( j=0 ; j < jLength ; j++) {
                                         
                     // Print token info 
-                    sel = allBridges[i].parentBridge.registeredTokens[j];      
+                    sel = allBridges[i].tokenPairs[j].parentToken;      
                     console.log( '\n(' + i + ',' + j + ')\n' + sel);
 
                     // TokenType.ERC20

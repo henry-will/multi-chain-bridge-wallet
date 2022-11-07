@@ -36,19 +36,17 @@ contract ServiceBridge {
         bridgePair.name = _name;
 
         // parentBridge
-        bridgePair.parentBridge.name = _parentBridgeName;
-        bridgePair.parentBridge.bridgeAddress = _parentBridgeAddress;
-        Token[] memory parentTokens = getTokens(_parentBridgeAddress);
-        for (uint256 i = 0; i < parentTokens.length; i++) {
-            bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
-        }
+        bridgePair.parentBridgeName = _parentBridgeName;
+        bridgePair.parentBridgeAddress = _parentBridgeAddress;
 
         // childBridge
-        bridgePair.childBridge.name = _childBridgeName;
-        bridgePair.childBridge.bridgeAddress = _childBridgeAddress;
-        Token[] memory childTokens = getTokens(_childBridgeAddress);
-        for (uint256 i = 0; i < childTokens.length; i++) {
-            bridgePair.childBridge.registeredTokens.push(childTokens[i]);
+        bridgePair.childBridgeName = _childBridgeName;
+        bridgePair.childBridgeAddress = _childBridgeAddress;
+
+        // tokenPairs
+        TokenPair[] memory tPairs = getTokenPairs(_parentBridgeAddress);
+        for (uint256 i = 0; i < tPairs.length; i++) {
+            bridgePair.tokenPairs.push(tPairs[i]);
         }
 
         // insert bridgePair to the BridgeMap
@@ -56,41 +54,65 @@ contract ServiceBridge {
     }
 
 
-    function getTokens(address _bridgeAddress )
+    function getTokenPairs(address _bridgeAddress )
         internal view 
-        returns (Token[] memory)
+        returns (TokenPair[] memory)
     {
         IBridgeTokens iBridgeTokens = IBridgeTokens(_bridgeAddress);
-        address[] memory tokenContracts = iBridgeTokens.getRegisteredTokenList();
-        uint256 length = tokenContracts.length; 
+        address[] memory parentTokenContracts = iBridgeTokens.getRegisteredTokenList();
+        address[] memory childTokenContracts = iBridgeTokens.getRegisteredChildTokenList();
+        uint256 length = parentTokenContracts.length; 
 
-        Token[] memory tokens = new Token[](length);
+        TokenPair[] memory tokenPairs = new TokenPair[](length);
 
         for (uint256 i = 0; i < length; i++) {
-            address tokenAddress = tokenContracts[i];
+            address parentTokenAddress = parentTokenContracts[i];
+            address childTokenAddress = childTokenContracts[i];
 
-            if (isContract(tokenAddress)){ 
-                IERC20Token ERC20tokenContract = IERC20Token(tokenAddress);
-                if ( ERC20tokenContract.supportsInterface(type(IERC20Token).interfaceId) ) {
-                    tokens[i].tokenAddress = tokenAddress ;
-                    tokens[i].tokenType = TokenType.ERC20 ;
-                    tokens[i].name = ERC20tokenContract.NAME() ;
-                    tokens[i].symbol = ERC20tokenContract.SYMBOL() ;
-                    tokens[i].decimals = ERC20tokenContract.DECIMALS() ;    
+            if (isContract(parentTokenAddress)){ 
+                IERC20Token erc20tokenContract = IERC20Token(parentTokenAddress);
+                if ( erc20tokenContract.supportsInterface(type(IERC20Token).interfaceId) ) {
+                    // parent token 
+                    tokenPairs[i].parentToken.tokenAddress = parentTokenAddress ;
+                    tokenPairs[i].parentToken.tokenType = TokenType.ERC20 ;
+                    tokenPairs[i].parentToken.name = erc20tokenContract.NAME() ;
+                    tokenPairs[i].parentToken.symbol = erc20tokenContract.SYMBOL() ;
+                    tokenPairs[i].parentToken.decimals = erc20tokenContract.DECIMALS() ;    
+
+                    // child token 
+                    tokenPairs[i].childToken.tokenAddress = childTokenAddress ;
+                    tokenPairs[i].childToken.tokenType = TokenType.ERC20 ;
+                    // child token's information is not saved in parent network
+                    // So we assume that childToken has the same infomation
+                    // by adding name with the post fix "L2" and symbol with the post fix "L"
+                    tokenPairs[i].childToken.name = string.concat( erc20tokenContract.NAME(), " L2");
+                    tokenPairs[i].childToken.symbol = string.concat( erc20tokenContract.SYMBOL(), "L");
+                    tokenPairs[i].childToken.decimals = erc20tokenContract.DECIMALS() ;    
                 } 
 
-                IERC721Token ERC721tokenContract = IERC721Token(tokenAddress);
-                if ( ERC721tokenContract.supportsInterface(type(IERC721Token).interfaceId) ) {
-                    tokens[i].tokenAddress = tokenAddress ;
-                    tokens[i].tokenType = TokenType.ERC721 ;
-                    tokens[i].name = ERC721tokenContract.NAME() ;
-                    tokens[i].symbol = "na" ;
-                    tokens[i].decimals = 0 ;    
+                IERC721Token erc721tokenContract = IERC721Token(parentTokenAddress);
+                if ( erc721tokenContract.supportsInterface(type(IERC721Token).interfaceId) ) {
+                    // parent token
+                    tokenPairs[i].parentToken.tokenAddress = parentTokenAddress ;
+                    tokenPairs[i].parentToken.tokenType = TokenType.ERC721 ;
+                    tokenPairs[i].parentToken.name = erc721tokenContract.NAME() ;
+                    tokenPairs[i].parentToken.symbol = "na" ;
+                    tokenPairs[i].parentToken.decimals = 0 ;    
+
+                    // child token 
+                    tokenPairs[i].childToken.tokenAddress = childTokenAddress ;
+                    tokenPairs[i].childToken.tokenType = TokenType.ERC721 ;
+                    // child token's information is not saved in parent network
+                    // So we assume that childToken has the same infomation
+                    // by adding name with the post fix "L2" 
+                    tokenPairs[i].childToken.name = string.concat( erc721tokenContract.NAME(), " L2");
+                    tokenPairs[i].childToken.symbol = "na" ;
+                    tokenPairs[i].childToken.decimals = 0 ;    
                 }
             }
         } 
 
-        return tokens;     
+        return tokenPairs;     
     }
 
 
@@ -133,52 +155,50 @@ contract ServiceBridge {
         BridgePair[] memory allBridgePairs = getAllBridgePairs();
 
         uint256 pairSize = allBridgePairs.length;
-        for (uint256 pairIndex = 0; pairIndex < pairSize; pairIndex++) {
-            totalTokenNum += allBridgePairs[pairIndex].parentBridge.registeredTokens.length; 
-            totalTokenNum += allBridgePairs[pairIndex].childBridge.registeredTokens.length; 
+        for (uint256 i = 0; i < pairSize; i++) {
+            totalTokenNum += allBridgePairs[i].tokenPairs.length * 2; 
         }
 
         return totalTokenNum;
     }
 
 
-    function getAllTokens() 
+    function getAllTokenPairs() 
         external view 
-        returns (Token[] memory)
+        returns (TokenPair[] memory)
     {
         uint256 tokenIndex = 0;
         uint256 tokenSize = getTotalTokensNum(); 
-        Token[] memory tokens = new Token[](tokenSize); 
+        TokenPair[] memory tokenPairs = new TokenPair[](tokenSize/2); 
 
         BridgePair[] memory allBridgePairs = getAllBridgePairs();
         
-        uint256 pairSize = allBridgePairs.length;
-        for (uint256 i = 0; i < pairSize; i++) {
+        uint256 bridgePairSize = allBridgePairs.length;
+        for (uint256 i = 0; i < bridgePairSize; i++) {
 
-            uint256 parentSize = allBridgePairs[i].parentBridge.registeredTokens.length;
-            for (uint256 j = 0; j < parentSize; j++) {
-                tokens[tokenIndex++] = Token({
-                    tokenAddress :  allBridgePairs[i].parentBridge.registeredTokens[j].tokenAddress, 
-                    tokenType : allBridgePairs[i].parentBridge.registeredTokens[j].tokenType,
-                    name : allBridgePairs[i].parentBridge.registeredTokens[j].name, 
-                    symbol : allBridgePairs[i].parentBridge.registeredTokens[j].symbol,
-                    decimals : allBridgePairs[i].parentBridge.registeredTokens[j].decimals
+            uint256 tokenPairSize = allBridgePairs[i].tokenPairs.length;
+            for (uint256 j = 0; j < tokenPairSize; j++) {
+                tokenPairs[tokenIndex].parentToken = Token({
+                    tokenAddress :  allBridgePairs[i].tokenPairs[j].parentToken.tokenAddress, 
+                    tokenType : allBridgePairs[i].tokenPairs[j].parentToken.tokenType,
+                    name : allBridgePairs[i].tokenPairs[j].parentToken.name, 
+                    symbol : allBridgePairs[i].tokenPairs[j].parentToken.symbol,
+                    decimals : allBridgePairs[i].tokenPairs[j].parentToken.decimals
                 }); 
-            }
 
-            uint256 childSize = allBridgePairs[i].childBridge.registeredTokens.length;
-            for (uint256 j = 0; j < childSize; j++) {
-                tokens[tokenIndex++] = Token({
-                    tokenAddress :  allBridgePairs[i].childBridge.registeredTokens[j].tokenAddress, 
-                    tokenType : allBridgePairs[i].childBridge.registeredTokens[j].tokenType,
-                    name : allBridgePairs[i].childBridge.registeredTokens[j].name, 
-                    symbol : allBridgePairs[i].childBridge.registeredTokens[j].symbol,
-                    decimals : allBridgePairs[i].childBridge.registeredTokens[j].decimals
+                tokenPairs[tokenIndex].childToken = Token({
+                    tokenAddress :  allBridgePairs[i].tokenPairs[j].childToken.tokenAddress, 
+                    tokenType : allBridgePairs[i].tokenPairs[j].childToken.tokenType,
+                    name : allBridgePairs[i].tokenPairs[j].childToken.name, 
+                    symbol : allBridgePairs[i].tokenPairs[j].childToken.symbol,
+                    decimals : allBridgePairs[i].tokenPairs[j].childToken.decimals
                 }); 
+
+                tokenIndex++; 
             }
         }
 
-        return tokens;
+        return tokenPairs;
     }
 
 
@@ -189,17 +209,12 @@ contract ServiceBridge {
         BridgePair storage bPair = bridgePairs.get(key); 
 
         // parentBridge tokens update
-        delete bPair.parentBridge.registeredTokens; 
-        Token[] memory parentTokens = getTokens(bPair.parentBridge.bridgeAddress);
-        for (uint256 i = 0; i < parentTokens.length; i++) {
-            bPair.parentBridge.registeredTokens.push(parentTokens[i]);
-        }
+        delete bPair.tokenPairs; 
 
-        // childBridge tokens update 
-        delete bPair.childBridge.registeredTokens;
-        Token[] memory childTokens = getTokens(bPair.childBridge.bridgeAddress);
-        for (uint256 i = 0; i < childTokens.length; i++) {
-            bPair.childBridge.registeredTokens.push(childTokens[i]);
+        // tokenPairs
+        TokenPair[] memory tokenPairs = getTokenPairs( bPair.parentBridgeAddress );
+        for (uint256 i = 0; i < tokenPairs.length; i++) {
+            bPair.tokenPairs.push(tokenPairs[i]);
         }
 
         bridgePairs.set( key, bPair);
