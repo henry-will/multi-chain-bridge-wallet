@@ -29,4 +29,5 @@ artifacts
 
 #yarn
 yarn-error.log
+deploy.output
 
