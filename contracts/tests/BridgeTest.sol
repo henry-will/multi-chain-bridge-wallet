@@ -22,6 +22,11 @@ contract ParentBridgeTest {
     function getRegisteredTokenList() external view returns (address[] memory) {
         return tokens;
     }
+
+    // dummy function for test
+    function getRegisteredChildTokenList() external view returns (address[] memory) {
+        return tokens;
+    }
 }
 
 contract ChildBridgeTest {
