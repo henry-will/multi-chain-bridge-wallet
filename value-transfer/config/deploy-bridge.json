@@ -1,0 +1,34 @@
+{
+  "bridge": {
+    "parent": "0xB955D14c947697C5Faf368858C477D300C4C6f29",
+    "child": "0xAE1fbB12CefC4aFe99048f653d373Fa8021D3d9C"
+  },
+  "url": {
+    "parent": "http://127.0.0.1:8451",
+    "child": "http://127.0.0.1:8351"
+  },
+  "contractOwner": {
+    "parent": "0x1dd4dc19688dde6b519f3d305349fa7cbc6f5c4195e72e0d12b665b2bc39a3a1",
+    "child": "0x6a98c76bae11151c5d74f9a007fdf689a7ca8aa3a78b1268fddf6d5df5348cf1"
+  },
+  "sender": {
+    "parent": "0x483bb95b5becd97b05fe280f215795de15eb9b31aaba9fe27625a372e59f556c",
+    "child": "0xacde2106c99ba64672a7912e904774643d78eb1ca3aa614ef10725b82a72f047"
+  },
+  "receiver": {
+    "parent": "0x17473dcB28994F8815f0E3879721602a83CE7BD6",
+    "child": "0x17473dcB28994F8815f0E3879721602a83CE7BD6"
+  },
+  "tokens": [
+    {
+      "parent": "0x72b9f8Abd1be97B619A9b834e167F74051b9Af3f",
+      "child": "0x9eb25373cfb8c6cB651238Ca98c9f9E547bC1cB2"
+    }
+  ],
+  "NFTs": [
+    {
+      "parent": "0x6a7947edF1FEA112E3Ddf946db2b5Ed8CE41bfBd",
+      "child": "0xF423Fa1373DC1cF8AFCb0d4eefDC00E85B7eeC4b"
+    }
+  ]
+}
