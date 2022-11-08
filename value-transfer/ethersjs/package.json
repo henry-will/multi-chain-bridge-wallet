@@ -1,0 +1,28 @@
+{
+  "name": "value-transfer-etherjs",
+  "version": "1.0.0",
+  "author": "Henry Will <99243374+henry-will@users.noreply.github.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "npx ts-node -T ERC20ValueTransfer.ts"
+  },
+  "devDependencies": {
+    "@openzeppelin/contracts": "^4.7.3",
+    "@typechain/ethers-v5": "^7.2.0",
+    "@types/node": "^16.11.17",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.25.3",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-promise": "^5.2.0",
+    "ethers": "^5.7.2",
+    "prettier": "^2.5.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  },
+  "dependencies": {}
+}
