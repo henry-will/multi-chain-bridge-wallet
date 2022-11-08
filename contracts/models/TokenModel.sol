@@ -19,4 +19,5 @@ struct Token {
     string name;
     string symbol;
     uint256 decimals;
+    string thumbnailUri;
 }
