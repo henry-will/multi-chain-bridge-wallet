@@ -21,7 +21,7 @@ contract BridgeService is TokenService {
     function getAllBridgePairs()
         external
         view
-        returns (BridgePair[] memory brigePairs)
+        returns (BridgePair[] memory bridgePairs)
     {
         return bridgePairs.getValues();
     }
@@ -55,21 +55,21 @@ contract BridgeService is TokenService {
         bridgePair.networkKey = key;
         bridgePair.parentBridge.name = parentBridgeName;
         bridgePair.parentBridge.bridgeAddress = parentBridgeAddress;
-        Token[] memory parentTokens = getTokens(parentBridgeAddress);
-        for (uint256 i = 0; i < parentTokens.length; i++) {
-            bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
-        }
+        // Token[] memory parentTokens = getTokens(parentBridgeAddress);
+        // for (uint256 i = 0; i < parentTokens.length; i++) {
+        //     bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
+        // }
         bridgePair.childBridge.name = childBridgeName;
         bridgePair.childBridge.bridgeAddress = childBridgeAddress;
-        Token[] memory childTokens = getTokens(childBridgeAddress);
-        for (uint256 i = 0; i < childTokens.length; i++) {
-            bridgePair.childBridge.registeredTokens.push(childTokens[i]);
-        }
+        // Token[] memory childTokens = getTokens(childBridgeAddress);
+        // for (uint256 i = 0; i < childTokens.length; i++) {
+        //     bridgePair.childBridge.registeredTokens.push(childTokens[i]);
+        // }
 
         bridgePairs.set(key, bridgePair);
     }
 
-    function getTokens(string memory key)
+    function getAllTokens(string memory key)
         external
         view
         returns (Token[] memory)
