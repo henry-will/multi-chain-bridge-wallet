@@ -8,5 +8,6 @@ interface IERC20Token {
 
     function DECIMALS() external view returns (uint8);
 
+    // must have to be implemented
     function supportsInterface(bytes4 interfaceId) external view returns (bool);
 }

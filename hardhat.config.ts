@@ -43,6 +43,7 @@ const config: HardhatUserConfig = {
             gas: 30000000,
             gasPrice: 0,
             accounts:[
+                // private key of signer for deploy in parent chain
                 '0xb79333fd93bd5f5c3a9f791f2d9ce0e3a92570d8a0c1bef0db5316d845b25784',
                 ], 
             // accounts: {
@@ -60,6 +61,7 @@ const config: HardhatUserConfig = {
             // gas: 50000000,
             // gasPrice: 25000000000,
             accounts:[
+                // private key of signer for deploy in child chain 
                 '0x7d621cc7cac4a95adf52f7e5be05c06945ecd967f84242fbd9271da2f611a7d9',
                 ], 
             // accounts: {

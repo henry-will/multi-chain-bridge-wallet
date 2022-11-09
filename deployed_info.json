@@ -1,1 +1,13 @@
-{"child":{"operator":"0x218ae88bfebec33afe9021ce23b47369c3031c31","bridge":"0xd8e2b398FEF62F3AEeC0F144AC01060EDd1c4a06","token":"0x102d45682C1E4E793f8Be966F1A8395bABd655FD"},"parent":{"operator":"0xc586d917fa82a348e59ad42f94485f229b83e571","bridge":"0xd9fcab02Ad041bD389Cb3423bA80197C1aEE0718","token":"0x6433c7AcFF878e71Ae2eEFb0c824A8222a148058"}}
+{
+    "child":{
+        "url":"http://127.0.0.1:8553",
+        "operator":"0xfefa3bc164b7eba36a23d78dfc0bbf2d62de7ef3",
+        "bridge":"",
+        "token":""
+    },
+    "parent":{
+        "operator":"0x92a34307ed247f191858a8813a6dccf9f331fb52",
+        "bridge":"",
+        "token":""
+    }
+}
