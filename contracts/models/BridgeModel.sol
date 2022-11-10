@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.17 <0.9.0;
+pragma solidity >=0.8.17;
 
 import "./TokenModel.sol";
 
@@ -7,7 +7,6 @@ struct BridgePair {
     string networkKey;
     Bridge parentBridge;
     Bridge childBridge;
-
 }
 
 struct Bridge {

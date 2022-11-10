@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.8.0;
 
 import "../models/BridgeModel.sol";
 import "./StringUtil.sol";
@@ -80,11 +80,7 @@ library IterableBridgeMap {
         return lastKey;
     }
 
-    function getKeys(Map storage map)
-        public
-        view
-        returns (string[] memory)
-    {
+    function getKeys(Map storage map) public view returns (string[] memory) {
         return map.keys;
     }
 

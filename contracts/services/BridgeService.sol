@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.9 <0.9.0;
+pragma solidity >=0.8.9;
 
 import "../interfaces/IBridgeTokens.sol";
 import "../interfaces/IERC20Token.sol";
@@ -18,11 +18,7 @@ contract BridgeService is TokenService {
 
     fallback() external payable {}
 
-    function getAllBridgePairs()
-        external
-        view
-        returns (BridgePair[] memory bridgePairs)
-    {
+    function getAllBridgePairs() public view returns (BridgePair[] memory) {
         return bridgePairs.getValues();
     }
 
@@ -55,12 +51,13 @@ contract BridgeService is TokenService {
         bridgePair.networkKey = key;
         bridgePair.parentBridge.name = parentBridgeName;
         bridgePair.parentBridge.bridgeAddress = parentBridgeAddress;
-        // Token[] memory parentTokens = getTokens(parentBridgeAddress);
-        // for (uint256 i = 0; i < parentTokens.length; i++) {
-        //     bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
-        // }
+        Token[] memory parentTokens = getTokens(parentBridgeAddress);
+        for (uint256 i = 0; i < parentTokens.length; i++) {
+            bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
+        }
         bridgePair.childBridge.name = childBridgeName;
         bridgePair.childBridge.bridgeAddress = childBridgeAddress;
+
         // Token[] memory childTokens = getTokens(childBridgeAddress);
         // for (uint256 i = 0; i < childTokens.length; i++) {
         //     bridgePair.childBridge.registeredTokens.push(childTokens[i]);

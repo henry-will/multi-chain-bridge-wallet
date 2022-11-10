@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.17 <0.9.0;
+pragma solidity >=0.8.17;
 
 import "../models/TokenModel.sol";
 import "../models/NetworkModel.sol";
@@ -10,6 +10,7 @@ contract NetworkService is NetworkKeyModel {
     using IterableNetworkMap for IterableNetworkMap.Map;
     IterableNetworkMap.Map private networks;
     address public owner;
+
     constructor() {
         owner = msg.sender;
     }
@@ -71,7 +72,7 @@ contract NetworkService is NetworkKeyModel {
         networks.set(key, network);
     }
 
-    function size() public view returns(uint256) {
+    function size() public view returns (uint256) {
         return networks.size();
     }
 

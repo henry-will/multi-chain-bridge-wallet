@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.8.0;
 
 import "../models/NetworkModel.sol";
 import "./StringUtil.sol";
@@ -82,19 +82,11 @@ library IterableNetworkMap {
         return lastKey;
     }
 
-    function getKeys(Map storage map)
-        public
-        view
-        returns (string[] memory)
-    {
+    function getKeys(Map storage map) public view returns (string[] memory) {
         return map.keys;
     }
 
-    function getValues(Map storage map)
-        public
-        view
-        returns (Network[] memory)
-    {
+    function getValues(Map storage map) public view returns (Network[] memory) {
         uint256 totalSize = map.keys.length;
         Network[] memory allNetworks = new Network[](totalSize);
         for (uint256 index = 0; index < totalSize; index++) {
