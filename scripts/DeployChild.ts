@@ -7,20 +7,34 @@ const conf = JSON.parse(fs.readFileSync(filename, 'utf8'));
 async function main() {
 
   const signers = await ethers.getSigners();
-  const owner = signers[0];
+  const owner = await signers[0].getAddress();
+  console.log('\n\nowner:', owner);
 
-  console.log('\n\nSCN operator:', conf.child.operator);
+  const provider = new ethers.providers.JsonRpcProvider(conf.child.url);
+  const gasPrice = await provider.getGasPrice();
+
+  console.log('Gas Price:', gasPrice);
+
+  console.log('SCN operator:', conf.child.operator);
 
   // Deploy bridge on SCN
-  const SCNbridge = await ethers.getContractFactory("Bridge", {signer: owner});
-  const scnBridge = await SCNbridge.deploy();
+  const SCNbridge = await ethers.getContractFactory("Bridge", {signer: signers[0]});
+  const scnBridge = await SCNbridge.deploy( true, { 
+                          gasPrice: gasPrice,
+                          // maxFeePerGas: 250000000000,
+                          // maxPriorityFeePerGas: 250000000000,
+                          gasLimit: 8500000 });
   await scnBridge.deployed();
   conf.child.bridge = scnBridge.address; 
   console.log('SCN bridge address: ', scnBridge.address);
 
   // Deploy ERC20 Token on SCN
-  const SCNtoken = await ethers.getContractFactory("ServiceChainToken", {signer: owner});
-  const scnToken = await SCNtoken.deploy();
+  const SCNtoken = await ethers.getContractFactory("ServiceChainToken", {signer: signers[0]});
+  const scnToken = await SCNtoken.deploy(scnBridge.address, {
+                          gasPrice: gasPrice,
+                          // maxFeePerGas: 250000000000,
+                          // maxPriorityFeePerGas: 250000000000,
+                          gasLimit: 8500000 });
   await scnToken.deployed();
   conf.child.token = scnToken.address;
   console.log('SCN Token address: ', scnToken.address);

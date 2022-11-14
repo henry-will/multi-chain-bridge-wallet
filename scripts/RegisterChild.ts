@@ -1,4 +1,5 @@
 import { ethers } from "hardhat";
+const axios = require('axios');
 
 const fs = require('fs')
 const filename  = "deployed_info.json"
@@ -28,28 +29,36 @@ async function main() {
   const signers = await ethers.getSigners();
   const owner = signers[0];
 
-  const SCNbridge = await ethers.getContractFactory("Bridge");
-  const scnBridge = await SCNbridge.attach( conf.child.bridge );
-  
-  const SCNtoken = await ethers.getContractFactory("ServiceChainToken");
-  const scnToken = await SCNtoken.attach( conf.child.token );
+  console.log('\n\n', conf);
+
+  const scnBridge = await ethers.getContractAt("Bridge", conf.child.bridge);
+  const scnToken = await ethers.getContractAt("ServiceChainToken", conf.child.token);  
+
+  const provider = new ethers.providers.JsonRpcProvider(conf.child.url);
+  const gasPrice = await provider.getGasPrice();
+
+  console.log('Gas Price:', gasPrice);
 
   // setting
-  await scnToken.addMinter(conf.child.bridge);
-  await scnBridge.registerOperator(conf.child.operator);  
-  await scnBridge.registerToken( conf.child.token, conf.parent.token );
-  await scnBridge.transferOwnership( conf.child.operator );
+  await scnToken.addMinter(conf.child.bridge, {gasPrice: gasPrice, gasLimit: 8500000 });
+  console.log('addMinter');
+  await scnBridge.registerOperator(conf.child.operator, {gasPrice: gasPrice, gasLimit: 8500000 });
+  console.log('registerOperator');
+  await scnBridge.registerToken( conf.child.token, conf.parent.token, {gasPrice: gasPrice, gasLimit: 8500000 });
+  console.log('registerToken');
+  await scnBridge.transferOwnership( conf.child.operator, {gasPrice: gasPrice, gasLimit: 8500000 });
+  console.log('transferOwnership');
 
 
   const url = conf.child.url;
-  log = 'registering bridges to the child node'
-  await jsonRpcReq(url, log, 'subbridge_registerBridge', [conf.child.bridge, conf.parent.bridge]);
+  const log1 = 'registering bridges to the child node'
+  await jsonRpcReq(url, log1, 'subbridge_registerBridge', [conf.child.bridge, conf.parent.bridge]);
 
-  log = 'subscribing bridges to the child node'
-  await jsonRpcReq(url, log, 'subbridge_subscribeBridge', [conf.child.bridge, conf.parent.bridge]);
+  const log2 = 'subscribing bridges to the child node'
+  await jsonRpcReq(url, log2, 'subbridge_subscribeBridge', [conf.child.bridge, conf.parent.bridge]);
 
-  log = 'register token to subbridge..'
-  await jsonRpcReq(url, log, 'subbridge_registerToken', [conf.child.bridge, conf.parent.bridge, conf.child.token, conf.parent.token]);
+  const log3 = 'register token to subbridge..'
+  await jsonRpcReq(url, log3, 'subbridge_registerToken', [conf.child.bridge, conf.parent.bridge, conf.child.token, conf.parent.token]);
 
 
   console.log(`subbridge.registerBridge("${conf.child.bridge}", "${conf.parent.bridge}")`)

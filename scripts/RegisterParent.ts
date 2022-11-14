@@ -19,9 +19,13 @@ async function main() {
 
   // setting
   await enToken.addMinter(conf.parent.bridge);
+  console.log('addMinter');
   await enBridge.registerOperator(conf.parent.operator);
+  console.log('registerOperator');
   await enBridge.registerToken( conf.parent.token, conf.child.token );
+  console.log('registerToken');
   await enBridge.transferOwnership(conf.parent.operator);
+  console.log('transferOwnership');
 
 }
 

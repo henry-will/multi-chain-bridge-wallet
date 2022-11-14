@@ -40,11 +40,13 @@ const config: HardhatUserConfig = {
         mainbridge: {
             url: "http://127.0.0.1:8553",
             chainId: 1000,
-            gas: 30000000,
-            gasPrice: 0,
+            //gas: 30000000,
+            // gasPrice: 250000000000,
+            gasPrice: 50000000000,
             accounts:[
+                // 0xe6E1663d44593ccE2Ff77492Ce8b253F3d954319
                 // private key of signer for deploy in parent chain
-                '0xb79333fd93bd5f5c3a9f791f2d9ce0e3a92570d8a0c1bef0db5316d845b25784',
+                '0xca8a1ea01a757975d5488cbaab8188dc88b565c69ffc7af4e0c6386eb557c447',
                 ], 
             // accounts: {
             //     mnemonic: "test test test test test test test test test test test junk",
@@ -56,13 +58,13 @@ const config: HardhatUserConfig = {
         subbridge: {
             url: "http://127.0.0.1:8554",
             chainId: 2000,
-            gas: 30000000,
-            gasPrice: 0,
-            // gas: 50000000,
-            // gasPrice: 25000000000,
+            //gas: 30000000,
+            // gasPrice: 250000000000,
+            gasPrice: 50000000000,
             accounts:[
+                // 0x5e2be232b1d7acfb26cd3be819736369807fc8e7
                 // private key of signer for deploy in child chain 
-                '0x7d621cc7cac4a95adf52f7e5be05c06945ecd967f84242fbd9271da2f611a7d9',
+                '0x7c6adb02eeca9efd9e4203cc8999e0836a836cbd1f763d4f3940dee39ed55cc6',
                 ], 
             // accounts: {
             //     mnemonic: "test test test test test test test test test test test junk",

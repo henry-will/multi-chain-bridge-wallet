@@ -1,14 +1,33 @@
 import { ethers } from "hardhat";
+const axios = require('axios');
 
 const fs = require('fs')
 const filename  = "deployed_info.json"
 const conf = JSON.parse(fs.readFileSync(filename, 'utf8'));
 
+async function jsonRpcReq(url, log, method, params) {
+  if (typeof jsonRpcReq.id == undefined) jsonRpcReq.id = 0;
+
+  console.log(log)
+  await axios.post(url, {
+      "jsonrpc":"2.0","method":method,"params":params,"id": jsonRpcReq.id++
+  }).then(res => {
+    if (res.data.error != undefined) {
+      console.log(res.data.error);
+      process.exit(res.data.code);
+    }
+  }).catch(err => {
+    if (err != undefined) {
+      console.log(err);
+      process.exit(1);
+    }
+  });
+}
+
 async function main() {
 
   const signers = await ethers.getSigners();
   const owner = signers[0];
-  console.log( signers[0].address );
   
   console.log('\n\n', conf);
 
@@ -18,7 +37,7 @@ async function main() {
   const ENtoken = await ethers.getContractFactory("ServiceChainToken");
   const entoken = await ENtoken.attach( conf.parent.token );
 
-
+  // account before value transfer 
   const alice = '0xc40b6909eb7085590e1c26cb3becc25368e249e9';
   const bal1 = await entoken.balanceOf(owner.address);
   console.log("signer's balance before requestValueTransfer:", bal1.toString());
@@ -29,16 +48,25 @@ async function main() {
   const bal4 = await entoken.balanceOf(alice);
   console.log("alice's balance before requestValueTransfer:", bal4.toNumber());
 
+  // gas price 
+  const provider = new ethers.providers.JsonRpcProvider(conf.parent.url);
+  const gasPrice = await provider.getGasPrice();
+  console.log('Gas Price:', gasPrice);
+
   // request to the token contract
-  const tx = await entoken.requestValueTransfer(100, alice, 0, []);
-  console.log( tx );
+  // const tx2 = await entoken.requestValueTransfer(100, alice, 0, [], {
+  //   gasPrice: gasPrice, 
+  //   gasLimit: 8500000
+  // });
+  // console.log( tx2 );
+  // const receipt = await tx2.wait();
+  // console.log(receipt);
 
-  // // direct request to the bridge
-  // await entoken.approve(enbridge.address, 100);
-  // await enbridge.requestERC20Transfer(entoken.address, alice, 100, 0, []);
-  // bal = await entoken.balanceOf(enbridge.address);
-  // console.log("ENbridge balance after requestERC20Transfer:", bal.toNumber());
-
+  // direct request to the bridge
+  await entoken.approve(enbridge.address, 100, {gasPrice: gasPrice, gasLimit: 8500000});
+  await enbridge.requestERC20Transfer(entoken.address, alice, 100, 0, [], {gasPrice: gasPrice, gasLimit: 8500000});
+  
+  // account after minting
   const bal5 = await entoken.balanceOf(owner.address);
   console.log("signer's balance after requestValueTransfer:", bal5.toString());
   const bal6 = await entoken.balanceOf(enbridge.address);
