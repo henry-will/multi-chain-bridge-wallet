@@ -42,7 +42,7 @@ describe("BridgeService", function () {
         const ChildBridge = await ethers.getContractFactory("ChildBridgeTest", {
             signer: owner,
         });
-        const childBridge = await ParentBridge.deploy();
+        const childBridge = await ChildBridge.deploy();
 
         return { bridge, tokenListCallTest, parentBridge, childBridge, owner, otherAccount };
     }
@@ -52,7 +52,7 @@ describe("BridgeService", function () {
             await tokenListCallTest.registered();
             const tokens = await tokenListCallTest.findTokenList();
             console.log("### tokens", tokens);
-            tokens.length.should.be.equals(2);
+            tokens.length.should.be.equals(3);
             tokens[1].name.should.be.equals("Parent ServiceChainToken 02");
         });
         it("should be added Bridge", async () => {
@@ -63,15 +63,17 @@ describe("BridgeService", function () {
     describe("BridgePair In Wallet", function () {
         it("should be empty when deployed", async function () {
             const { bridge } = await loadFixture(deployBridgeServiceFixture);
-            const bridgePairs = await bridge.getAllBridgePairs();
-            expect(0).to.equals(bridgePairs.length);
+            const size = await bridge.size();
+            expect(0).to.equals(size);
         });
         it("should be deploy brige contract and token contracts", async function () {
             const { bridge, childBridge, parentBridge } = await loadFixture(deployBridgeServiceFixture);
-            await bridge.addBridgePair("123:key", "parent", parentBridge.address, "child", childBridge.address);
-            const bridgePairs = await bridge.getAllBridgePairs();
-            console.log("bridgePairs", bridgePairs[0].parentBridge.registeredTokens);
-            expect(bridgePairs.length).to.equals(1);
+            const key = "123:key";
+            const childKey = "234:key";
+            await bridge.addBridgePair(key, "parent", parentBridge.address, childKey, "child", childBridge.address);
+            const bridgePair = await bridge.getBridgePair(key);
+            expect(bridgePair.parentBridge.name).to.equals("parent");
+            console.log("bridgePairs", bridgePair.parentBridge.registeredTokens);
         });
         it("should be add with parent and child in network", async function () {
         });

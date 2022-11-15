@@ -41,7 +41,7 @@ describe("NetworkService", function () {
         });
         it("should add one Network", async function () {
             const { network } = await loadFixture(deployNetworkServiceFixture);
-            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
+            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1);
             const testNetwork = await network.getNetwork("123:test");
             // console.log("testNetwork is ", testNetwork);
 
@@ -49,6 +49,11 @@ describe("NetworkService", function () {
             // console.log("Networks is ", allNetworks);
             expect(1).to.equals(allNetworks.length);
             expect("123:test").to.equals(allNetworks[0].key);
+
+            const layer1Networks = await network.getLayer1Networks();
+            // console.log("Networks is ", allNetworks);
+            expect(1).to.equals(layer1Networks.length);
+            expect("123:test").to.equals(layer1Networks[0].key);
 
             const networks = await network.getActiveNetworks();
             // console.log("Networks is ", networks);
@@ -61,7 +66,7 @@ describe("NetworkService", function () {
         });
         it("should find an added Network", async function () {
             const { network } = await loadFixture(deployNetworkServiceFixture);
-            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
+            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1);
             const key = await network.getKey("123", "test");
             const testNetwork = await network.getNetwork(key);
             key.should.equal("123:test");
@@ -71,7 +76,7 @@ describe("NetworkService", function () {
         });
         it("should delete the added Network", async function () {
             const { network } = await loadFixture(deployNetworkServiceFixture);
-            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
+            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1);
             const key = await network.getKey("123", "test");
             key.should.equal("123:test");
             await network.deleteNetwork(key);
@@ -83,16 +88,16 @@ describe("NetworkService", function () {
     describe("Error Tests", function () {
         it("should cause the error because of a different input key", async function () {
             const { network } = await loadFixture(deployNetworkServiceFixture);
-            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
+            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1);
             await expect(
                 network.updateNetwork("1234:badkey", "123", "test", "Henry Test", "http://127.0.0.1:7351", 123)
             ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string 'Not Found, current key 1234:badkey is dirrent from 123:test'");
         });
         it("should cause the error because same key is inserted", async function () {
             const { network } = await loadFixture(deployNetworkServiceFixture);
-            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18);
+            await network.addNetwork("123", "test", "Henry Test", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1);
             await expect(
-                network.addNetwork("123", "test", "Henry Test 2", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18)
+                network.addNetwork("123", "test", "Henry Test 2", "http://127.0.0.1:7351", 123, "Henry Token", "HRT", 18, '', '', 1)
             ).to.be.revertedWith("VM Exception while processing transaction: reverted with reason string '123:test already exists'");
         });
     });
