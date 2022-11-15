@@ -4,6 +4,7 @@ import { Signer, BigNumber } from 'ethers';
 import fs from 'fs';
 import { ethers } from 'hardhat';
 import { Token, BridgeServiceJson, BridgeParam } from './DeployInterface';
+import { getOwnerAndGasPrice, getCaverAndUnlockedPublicKey } from './DeployUtils';
 
 export async function deployIterableBridgeMap(owner: Signer, gasPrice: BigNumber, stringUtilAddress: string) {
     const IterableBridgeMap = await ethers.getContractFactory('IterableBridgeMap', {
@@ -29,19 +30,20 @@ export async function deployBridgeService(owner: Signer, gasPrice: BigNumber, it
     console.log('## BridgeService ', bridgeService.address);
     return bridgeService;
 }
-export const updateChildBridgeTokens = async (rpcUrl: string, bridgeServiceAddress: string, operatorAccount: string, operatorPrivateKey: string, key: string, childBridge: string, tokens: Token[]) => {
-    const caver = new Caver(rpcUrl);
-    const keyring = new caver.wallet.keyring.singleKeyring(operatorAccount, operatorPrivateKey);
-    const sender = caver.wallet.add(keyring).address;
+
+export const updateChildBridgeTokens = async (rpcUrl: string, bridgeServiceAddress: string, operatorPrivateKey: string, key: string, childBridge: string, tokens: Token[]) => {
+    const { owner, gasPrice } = await getOwnerAndGasPrice(rpcUrl, operatorPrivateKey);
+    const { caver, account } = getCaverAndUnlockedPublicKey(rpcUrl, owner.address, operatorPrivateKey);
+    const sender = account;
 
     // Load Contract
     const bridgeServiceJson = JSON.parse(fs.readFileSync(BridgeServiceJson, 'utf8'));
-    const BridgeContract = caver.contract.create(bridgeServiceJson.abi, bridgeServiceAddress, { from: sender, gas: 8500000 });
+    const bridgeContract = caver.contract.create(bridgeServiceJson.abi, bridgeServiceAddress, { from: sender, gas: 8500000 });
 
-    const receipt = await BridgeContract.methods.addChildTokens(key, childBridge, tokens).send({ from: sender, gas: 8500000 });
+    // const bridgePair = await BridgeContract.methods.getBridgePair(key).call({ from: sender, gas: 8500000 });
+    // console.log('bridge', bridgePair);
+    const receipt = await bridgeContract.methods.addChildTokens(key, childBridge, tokens).send({ from: sender, gas: 8500000 });
     // console.log('child bridge token add', receipt);
-    const bridges = await BridgeContract.methods.getAllBridgePairs().call({ from: sender, gas: 8500000 });
-    console.log('child bridge', bridges[0].childBridge);
 }
 
 export const getBridgeContract = async (caver: Caver, bridgeServiceAddress: string, contractOwner: string) => {
@@ -52,7 +54,7 @@ export const getBridgeContract = async (caver: Caver, bridgeServiceAddress: stri
 
 export const addBridge = async (contract: Contract, contractOwner: string, bridge: BridgeParam) => {
 
-    await contract.methods.addBridgePair(bridge.networkKey, bridge.parentName, bridge.parentBridge, bridge.childName, bridge.childBridge).send({
+    await contract.methods.addBridgePair(bridge.networkKey, bridge.parentName, bridge.parentBridge, bridge.childKey, bridge.childName, bridge.childBridge).send({
         from: contractOwner,
         gas: 8500000,
     });

@@ -25,7 +25,7 @@ export const getChildBridgeTokens = async (tokenContract: Contract, childBridge:
 
     // Load Contract
     const tokens = await tokenContract.methods.getTokens(childBridge).call({ from: contractOwner, gas: 8500000 });
-    console.log(`Tokens tokens)`);
+    // console.log(`Tokens ${tokens}`);
 
     let tokenArray: Array<Token> = [];
     for (let i = 0; i < tokens.length; i++) {

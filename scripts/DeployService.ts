@@ -1,10 +1,10 @@
-import { ethers } from 'hardhat';
-import Caver from 'caver-js';
+import { Contract } from 'caver-js';
 import fs from 'fs';
-import { NetworkParam, TokenParam, BridgeParam } from './DeployInterface';
-import { addBridge, deployBridgeService, deployIterableBridgeMap, getBridgeContract, updateChildBridgeTokens } from './DeployBridgeService';
+import { NetworkParam, TokenParam, BridgeParam, Network, Token } from './DeployInterface';
+import { addBridge, deployBridgeService, deployIterableBridgeMap, getBridgeContract, updateChildBridgeTokens, updateChildBridgeTokens2 } from './DeployBridgeService';
 import { deployTokenService, getChildBridgeTokens, getNetworkTokens, getTokenContract } from './DeployTokenService';
 import { addNetwork, deployIterableNetworkMap, deployNetworkService, deployStringUtil, getNetworkContract, getNetworks } from './DeployNetworkService';
+import { getOwnerAndGasPrice, getCaverAndUnlockedPublicKey } from './DeployUtils';
 
 const conf = JSON.parse(fs.readFileSync('./value-transfer/config/deploy-bridge.json', 'utf8'));
 
@@ -15,19 +15,6 @@ const parentBridgeAddress = conf.bridge.parent;
 const childBridgeAddress = conf.bridge.child;
 const childPrivateKey = conf.contractOwner.child;
 
-async function getOwnerAndGasPrice(url: string, privateKey: string) {
-    const provider = new ethers.providers.JsonRpcProvider(url);
-    const owner = new ethers.Wallet(privateKey, provider)
-    const gasPrice = await provider.getGasPrice()
-    console.log(`${url} gas price is ${gasPrice}`);
-    return { owner, gasPrice };
-}
-function getCaverAndUnlockedPublicKey(url: string, publicKey: string, privateKey: string) {
-    const caver = new Caver(url);
-    const keyring = new caver.wallet.keyring.singleKeyring(publicKey, privateKey);
-    const account = caver.wallet.add(keyring).address;
-    return { caver, account };
-}
 async function main() {
     const { owner, gasPrice } = await getOwnerAndGasPrice(deployRpcUrl, managerPrivateKey);
     const { caver, account } = getCaverAndUnlockedPublicKey(deployRpcUrl, owner.address, managerPrivateKey);
@@ -40,33 +27,68 @@ async function main() {
     const networkService = await deployNetworkService(owner, gasPrice, stringUtilAddress, iterableNetworkMapAddress);
     const bridgeService = await deployBridgeService(owner, gasPrice, deployIterableBridgeAddress);
 
-    const networkParam: NetworkParam = { chainId: '1000', shortName: 'MBX', name: 'MARBLEX', rpcUrl: childRpcUrl, networkId: 9999 };
-    const tokenParam: TokenParam = { symbol: 'MBX', name: 'MARBLEX', decimals: 18 };
     const networkContract = await getNetworkContract(caver, networkService.address, contractOwner);
-    const key = await addNetwork(networkContract, contractOwner, networkParam, tokenParam);
-
     const bridgeContract = await getBridgeContract(caver, bridgeService.address, contractOwner);
-    const bridgeParam: BridgeParam = { networkKey: key, parentName: 'parent henry', parentBridge: parentBridgeAddress, childName: 'child henry', childBridge: childBridgeAddress };
-    await addBridge(bridgeContract, contractOwner, bridgeParam);
 
-    // child chain
-    const childOwner = await getOwnerAndGasPrice(childRpcUrl, childPrivateKey);
-    const childCaver = getCaverAndUnlockedPublicKey(childRpcUrl, childOwner.owner.address, childPrivateKey);
-    const childContractOwner = childCaver.account;
-    const tokenService = await deployTokenService(childOwner.owner, childOwner.gasPrice);
-    const tokenContract = await getTokenContract(childCaver.caver, tokenService.address, childContractOwner);
-    const childTokens = await getChildBridgeTokens(tokenContract, childBridgeAddress, childContractOwner);
+    // await addMarbleXNetwork(networkContract, contractOwner, bridgeContract);
+    const key = await addWalletNetwork(networkContract, contractOwner, bridgeContract);
 
-    await updateChildBridgeTokens(deployRpcUrl, bridgeContract.options.address, contractOwner, managerPrivateKey, key, childBridgeAddress, childTokens);
+    const childTokens = await getChildTokens();
+    await updateChildBridgeTokens(deployRpcUrl, bridgeContract.options.address, managerPrivateKey, key, childBridgeAddress, childTokens);
 
     const networks = await getNetworks(deployRpcUrl, contractOwner, managerPrivateKey, networkContract.options.address);
     console.log('networks ', networks);
 
     const networkTokens = await getNetworkTokens(deployRpcUrl, contractOwner, managerPrivateKey, bridgeContract.options.address, networkContract.options.address, key);
-    console.log('networks ', networkTokens);
+    console.log('network tokens ', networkTokens);
 }
 
 main().catch((error) => {
     console.error(error);
     process.exitCode = 1;
 });
+
+const addMarbleXNetwork = async (networkContract: Contract, contractOwner: string, bridgeContract: Contract) => {
+    let parentKey = "1000:MBX";
+    let childKey = "1004:MBXL";
+    const l1NetworkParam: NetworkParam = { chainId: '1000', shortName: 'MBX', name: 'MARBLEX', rpcUrl: deployRpcUrl, networkId: 1000 };
+    const l1TokenParam: TokenParam = { symbol: 'KLAY', name: 'Klaytn Token', decimals: 18 };
+    const l1Key: string = await addNetwork(networkContract, contractOwner, l1NetworkParam, l1TokenParam, childKey, '', 1);
+
+    const l2NetworkParam: NetworkParam = { chainId: '1004', shortName: 'MBXL', name: 'MARBLEX L2', rpcUrl: childRpcUrl, networkId: 1004 };
+    const l2TokenParam: TokenParam = { symbol: 'KLAYL2', name: 'Klaytn Token L2', decimals: 18 };
+    const l2Key: string = await addNetwork(networkContract, contractOwner, l2NetworkParam, l2TokenParam, '', parentKey, 2);
+
+    const bridgeParam: BridgeParam = { networkKey: l1Key, parentName: 'Parent MBX', parentBridge: parentBridgeAddress, childKey: l2Key, childName: 'Child MBXL', childBridge: childBridgeAddress };
+    await addBridge(bridgeContract, contractOwner, bridgeParam);
+    return l1Key;
+};
+
+const addWalletNetwork = async (networkContract: Contract, contractOwner: string, bridgeContract: Contract) => {
+    let parentKey = "1000:KHW";
+    let childKey = "1004:KHWL";
+    const l1NetworkParam: NetworkParam = { chainId: '1000', shortName: 'KHW', name: 'H Wallet', rpcUrl: deployRpcUrl, networkId: 1000 };
+    const l1TokenParam: TokenParam = { symbol: 'KLAY', name: 'Klaytn Token', decimals: 18 };
+    const l1Key: string = await addNetwork(networkContract, contractOwner, l1NetworkParam, l1TokenParam, childKey, '', 1);
+
+    const l2NetworkParam: NetworkParam = { chainId: '1004', shortName: 'KHWL', name: 'H Wallet L2', rpcUrl: childRpcUrl, networkId: 1004 };
+    const l2TokenParam: TokenParam = { symbol: 'KLAYL2', name: 'Klaytn Token L2', decimals: 18 };
+    const l2Key: string = await addNetwork(networkContract, contractOwner, l2NetworkParam, l2TokenParam, '', parentKey, 2);
+
+    const bridgeParam: BridgeParam = { networkKey: l1Key, parentName: 'Parent KHW', parentBridge: parentBridgeAddress, childKey: l2Key, childName: 'Child KHWL', childBridge: childBridgeAddress };
+    await addBridge(bridgeContract, contractOwner, bridgeParam);
+    return l1Key;
+};
+
+
+const getChildTokens = async () => {
+    const childOwner = await getOwnerAndGasPrice(childRpcUrl, childPrivateKey);
+    const childCaver = getCaverAndUnlockedPublicKey(childRpcUrl, childOwner.owner.address, childPrivateKey);
+    const childContractOwner = childCaver.account;
+
+    const tokenService = await deployTokenService(childOwner.owner, childOwner.gasPrice);
+    const tokenContract = await getTokenContract(childCaver.caver, tokenService.address, childContractOwner);
+
+    const childTokens = await getChildBridgeTokens(tokenContract, childBridgeAddress, childContractOwner);
+    return childTokens;
+};

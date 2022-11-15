@@ -68,9 +68,9 @@ export const getNetworkContract = async (caver: Caver, networkServiceAddress: st
     return networkContract;
 }
 
-export const addNetwork = async (contract: Contract, contractOwner: string, network: NetworkParam, token: TokenParam) => {
+export const addNetwork = async (contract: Contract, contractOwner: string, network: NetworkParam, token: TokenParam, childKey: string, parentKey: string, layer: number) => {
 
-    await contract.methods.addNetwork(network.chainId, network.shortName, network.name, network.rpcUrl, network.networkId, token.name, token.symbol, token.decimals).send({
+    await contract.methods.addNetwork(network.chainId, network.shortName, network.name, network.rpcUrl, network.networkId, token.name, token.symbol, token.decimals, childKey, parentKey, layer).send({
         from: contractOwner,
         gas: 8500000,
     });

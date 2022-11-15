@@ -18,6 +18,7 @@ export interface BridgeParam {
     networkKey: string;
     parentName: string;
     parentBridge: string;
+    childKey: string;
     childName: string;
     childBridge: string;
 }
