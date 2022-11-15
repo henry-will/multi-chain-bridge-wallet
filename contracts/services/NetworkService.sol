@@ -23,7 +23,10 @@ contract NetworkService is NetworkKeyModel {
         uint256 networkId,
         string memory tokenName,
         string memory tokenSymbol,
-        uint256 tokenDecimals
+        uint256 tokenDecimals,
+        string memory childKey,
+        string memory parentKey,
+        uint8 layer
     ) public payable returns (bool) {
         string memory key = getKey(chainId, shortName);
         require(!networks.exist(key), string.concat(key, " already exists"));
@@ -37,6 +40,10 @@ contract NetworkService is NetworkKeyModel {
         network.networkId = networkId;
 
         setNativeCurrency(network, tokenName, tokenSymbol, tokenDecimals);
+
+        network.childKey = childKey;
+        network.parentKey = parentKey;
+        network.layer = layer;
         initDetail(network);
         networks.set(key, network);
 
@@ -86,6 +93,22 @@ contract NetworkService is NetworkKeyModel {
 
     function getKeys() external view returns (string[] memory) {
         return networks.getKeys();
+    }
+
+    function getLayer1Networks() external view returns (Network[] memory) {
+        Network[] memory activeNetworks = new Network[](networks.size());
+        uint256 activeIndex = 0;
+        for (uint256 index = 0; index < networks.size(); index++) {
+            string memory key = networks.getKeyAtIndex(index);
+            Network memory network = networks.get(key);
+            if (network.layer == 1) {
+                activeNetworks[activeIndex++] = network;
+            }
+        }
+        for (uint256 index = activeIndex; index < networks.size(); index++) {
+            delete activeNetworks[index];
+        }
+        return activeNetworks;
     }
 
     function getAllNetworks() external view returns (Network[] memory) {

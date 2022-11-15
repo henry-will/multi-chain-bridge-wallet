@@ -21,3 +21,10 @@ struct Token {
     uint256 decimals;
     string thumbnailUri;
 }
+
+struct TokenPair {
+    address bridgeAddress;
+    Token token;
+    Token counterpartToken;
+    string counterpartKey;
+}

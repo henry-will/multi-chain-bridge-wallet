@@ -6,6 +6,7 @@ import "./TokenModel.sol";
 struct BridgePair {
     string networkKey;
     Bridge parentBridge;
+    string childKey;
     Bridge childBridge;
 }
 

@@ -16,21 +16,16 @@ struct Network {
     string explorer;
     string description;
     string website;
+    string childKey;
+    string parentKey;
+    uint8 layer;
     NetworkDetail detail;
-    NetworkPair networkPair;
 }
 
 struct NativeCurrency {
     string name;
     string symbol;
     uint256 decimals;
-}
-
-struct NetworkPair {
-    string name;
-    uint256 depth;
-    string parentId;
-    string[] childIds;
 }
 
 struct NetworkDetail {

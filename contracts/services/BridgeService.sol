@@ -42,6 +42,7 @@ contract BridgeService is TokenService {
         string memory key,
         string memory parentBridgeName,
         address parentBridgeAddress,
+        string memory childKey,
         string memory childBridgeName,
         address childBridgeAddress
     ) public {
@@ -55,19 +56,68 @@ contract BridgeService is TokenService {
         for (uint256 i = 0; i < parentTokens.length; i++) {
             bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
         }
+        bridgePair.childKey = childKey;
         bridgePair.childBridge.name = childBridgeName;
         bridgePair.childBridge.bridgeAddress = childBridgeAddress;
-
-        // Token[] memory childTokens = getTokens(childBridgeAddress);
-        // for (uint256 i = 0; i < childTokens.length; i++) {
-        //     bridgePair.childBridge.registeredTokens.push(childTokens[i]);
-        // }
 
         bridgePairs.set(key, bridgePair);
     }
 
-    function getAllTokens(string memory key)
+    function getTokenPair(string memory key, address tokenAddress)
         external
+        view
+        returns (TokenPair memory)
+    {
+        BridgePair storage bridgePair = bridgePairs.get(key);
+        uint256 parentTokenSize = bridgePair
+            .parentBridge
+            .registeredTokens
+            .length;
+
+        for (uint256 i = 0; i < parentTokenSize; i++) {
+            if (
+                bridgePair.parentBridge.registeredTokens[i].tokenAddress ==
+                tokenAddress
+            ) {
+                return
+                    TokenPair(
+                        bridgePair.parentBridge.bridgeAddress,
+                        bridgePair.parentBridge.registeredTokens[i],
+                        bridgePair.childBridge.registeredTokens[i],
+                        bridgePair.childKey
+                    );
+            }
+        }
+        revert("Not Found TokenAddress");
+    }
+
+    function getChildTokenPair(string memory key, address tokenAddress)
+        external
+        view
+        returns (TokenPair memory)
+    {
+        BridgePair storage bridgePair = bridgePairs.get(key);
+        uint256 childTokenSize = bridgePair.childBridge.registeredTokens.length;
+
+        for (uint256 i = 0; i < childTokenSize; i++) {
+            if (
+                bridgePair.childBridge.registeredTokens[i].tokenAddress ==
+                tokenAddress
+            ) {
+                return
+                    TokenPair(
+                        bridgePair.childBridge.bridgeAddress,
+                        bridgePair.childBridge.registeredTokens[i],
+                        bridgePair.parentBridge.registeredTokens[i],
+                        bridgePair.networkKey
+                    );
+            }
+        }
+        revert("Not Found TokenAddress");
+    }
+
+    function getAllTokens(string memory key)
+        public
         view
         returns (Token[] memory)
     {
