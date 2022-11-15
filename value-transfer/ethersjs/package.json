@@ -4,7 +4,8 @@
   "author": "Henry Will <99243374+henry-will@users.noreply.github.com>",
   "license": "MIT",
   "scripts": {
-    "test": "npx ts-node -T ERC20ValueTransfer.ts"
+    "test": "npx ts-node -T ERC20ValueTransfer.ts",
+    "drop": "npx ts-node -T dropTokens.ts"
   },
   "devDependencies": {
     "@openzeppelin/contracts": "^4.7.3",
