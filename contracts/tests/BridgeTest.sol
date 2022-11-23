@@ -2,8 +2,9 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20Test.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ParentBridgeTest {
+contract ParentBridgeTest is Ownable {
     address[] public tokens;
 
     constructor() {
@@ -21,7 +22,7 @@ contract ParentBridgeTest {
     }
 }
 
-contract ChildBridgeTest {
+contract ChildBridgeTest is Ownable {
     address[] public tokens;
 
     constructor() {

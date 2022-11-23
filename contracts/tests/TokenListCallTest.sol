@@ -19,7 +19,7 @@ contract TokenListCallTest is TokenService {
     function registered() public {
         ParentBridgeTest parentTest = new ParentBridgeTest();
         address parent = address(parentTest);
-        Token[] memory tokens = getTokens(parent);
+        Token[] memory tokens = findRegisteredTokens(parent);
         for (uint256 i = 0; i < tokens.length; i++) {
             registeredTokens.push(tokens[i]);
         }

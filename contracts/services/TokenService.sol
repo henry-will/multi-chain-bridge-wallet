@@ -11,7 +11,7 @@ contract TokenService {
     using ERC165Checker for address;
     bytes4 private constant _INTERFACE_ID_ERC721 = 0x80ac58cd;
 
-    function getTokens(address bridgeAddress)
+    function findRegisteredTokens(address bridgeAddress)
         public
         view
         returns (Token[] memory)
@@ -96,11 +96,12 @@ contract TokenService {
         view
         returns (bool)
     {
-        uint256 contractSize;
+        return contractAddress.code.length > 0;
+        // uint256 contractSize;
 
-        assembly {
-            contractSize := extcodesize(contractAddress)
-        }
-        return contractSize != 0;
+        // assembly {
+        //     contractSize := extcodesize(contractAddress)
+        // }
+        // return contractSize != 0;
     }
 }

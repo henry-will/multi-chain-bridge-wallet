@@ -51,7 +51,7 @@ describe("BridgeService", function () {
             const { tokenListCallTest } = await loadFixture(deployBridgeServiceFixture);
             await tokenListCallTest.registered();
             const tokens = await tokenListCallTest.findTokenList();
-            console.log("### tokens", tokens);
+            // console.log("### tokens", tokens);
             tokens.length.should.be.equals(3);
             tokens[1].name.should.be.equals("Parent ServiceChainToken 02");
         });
@@ -73,7 +73,36 @@ describe("BridgeService", function () {
             await bridge.addBridgePair(key, "parent", parentBridge.address, childKey, "child", childBridge.address);
             const bridgePair = await bridge.getBridgePair(key);
             expect(bridgePair.parentBridge.name).to.equals("parent");
-            console.log("bridgePairs", bridgePair.parentBridge.registeredTokens);
+            // console.log("bridgePairs", bridgePair.parentBridge.registeredTokens);
+            await bridge.deleteBridgePair(key)
+        });
+        it("should be updated with the right permission", async function () {
+            const { bridge, childBridge, parentBridge } = await loadFixture(deployBridgeServiceFixture);
+            const key = "123:key";
+            const childKey = "234:key";
+            await bridge.addBridgePair(key, "parent", parentBridge.address, childKey, "child", childBridge.address);
+            let bridgePair = await bridge.getBridgePair(key);
+            expect(bridgePair.parentBridge.name).to.equals("parent");
+            // console.log("bridgePairs", bridgePair.parentBridge.registeredTokens);
+            await expect(
+                await bridge.updateParentBridge(key, "parent updated", parentBridge.address)
+            ).to.be.ok;
+            bridgePair = await bridge.getBridgePair(key);
+            expect(bridgePair.parentBridge.name).to.equals("parent updated");
+            await bridge.deleteBridgePair(key)
+        });
+        it("should not be deleted with the wrong permission", async function () {
+            const { bridge, childBridge, parentBridge, otherAccount } = await loadFixture(deployBridgeServiceFixture);
+            const key = "123:key";
+            const childKey = "234:key";
+            await bridge.addBridgePair(key, "parent", parentBridge.address, childKey, "child", childBridge.address);
+            const bridgePair = await bridge.getBridgePair(key);
+            expect(bridgePair.parentBridge.name).to.equals("parent");
+            // console.log("bridgePairs", bridgePair.parentBridge.registeredTokens);
+
+            await expect(
+                bridge.connect(otherAccount).deleteBridgePair(key)
+            ).to.be.reverted;
         });
         it("should be add with parent and child in network", async function () {
         });
@@ -81,7 +110,7 @@ describe("BridgeService", function () {
         });
         it("should be list the parent and child tokens of a specific network", async function () {
         });
-        it("Pepper: should be check CRUD permission of networks, bridges and tokens", async function () {
+        it("should be check CRUD permission of networks, bridges and tokens", async function () {
         });
         it("Optional: should be list tokens with klay", async function () {
         });

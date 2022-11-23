@@ -24,7 +24,7 @@ export const getTokenContract = async (caver: Caver, tokenServiceAddress: string
 export const getChildBridgeTokens = async (tokenContract: Contract, childBridge: string, contractOwner: string) => {
 
     // Load Contract
-    const tokens = await tokenContract.methods.getTokens(childBridge).call({ from: contractOwner, gas: 8500000 });
+    const tokens = await tokenContract.methods.findRegisteredTokens(childBridge).call({ from: contractOwner, gas: 8500000 });
     // console.log(`Tokens ${tokens}`);
 
     let tokenArray: Array<Token> = [];

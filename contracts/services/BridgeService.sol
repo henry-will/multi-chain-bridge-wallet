@@ -9,18 +9,11 @@ import "../models/BridgeModel.sol";
 import "../models/NetworkKeyModel.sol";
 import "../libs/IterableBridgeMap.sol";
 import "./TokenService.sol";
+import "./AccessControlService.sol";
 
-contract BridgeService is TokenService {
+contract BridgeService is TokenService, AccessControlService {
     using IterableBridgeMap for IterableBridgeMap.Map;
     IterableBridgeMap.Map private bridgePairs;
-
-    receive() external payable {}
-
-    fallback() external payable {}
-
-    function getAllBridgePairs() public view returns (BridgePair[] memory) {
-        return bridgePairs.getValues();
-    }
 
     function size() public view returns (uint256) {
         return bridgePairs.size();
@@ -34,10 +27,6 @@ contract BridgeService is TokenService {
         return bridgePairs.get(key);
     }
 
-    function getKeys() external view returns (string[] memory) {
-        return bridgePairs.getKeys();
-    }
-
     function addBridgePair(
         string memory key,
         string memory parentBridgeName,
@@ -48,11 +37,14 @@ contract BridgeService is TokenService {
     ) public {
         require(!bridgePairs.exist(key), string.concat(key, " already exists"));
 
+        // add Role
+        addBridgeAdminRole(key, parentBridgeAddress);
+
         BridgePair storage bridgePair = bridgePairs.get(key);
         bridgePair.networkKey = key;
         bridgePair.parentBridge.name = parentBridgeName;
         bridgePair.parentBridge.bridgeAddress = parentBridgeAddress;
-        Token[] memory parentTokens = getTokens(parentBridgeAddress);
+        Token[] memory parentTokens = findRegisteredTokens(parentBridgeAddress);
         for (uint256 i = 0; i < parentTokens.length; i++) {
             bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
         }
@@ -60,6 +52,49 @@ contract BridgeService is TokenService {
         bridgePair.childBridge.name = childBridgeName;
         bridgePair.childBridge.bridgeAddress = childBridgeAddress;
 
+        bridgePairs.set(key, bridgePair);
+    }
+
+    function deleteBridgePair(string memory key) public onlyServiceRole(key) {
+        require(bridgePairs.exist(key), string.concat("Not Found Key ", key));
+        bridgePairs.remove(key);
+    }
+
+    function updateChildBridge(
+        string memory key,
+        string memory childKey,
+        string memory childBridgeName,
+        address childBridgeAddress
+    ) public onlyServiceRole(key) {
+        require(bridgePairs.exist(key), string.concat("Not Found Key ", key));
+
+        BridgePair storage bridgePair = bridgePairs.get(key);
+        bridgePair.childKey = childKey;
+        bridgePair.childBridge.name = childBridgeName;
+        bridgePair.childBridge.bridgeAddress = childBridgeAddress;
+
+        bridgePairs.set(key, bridgePair);
+    }
+
+    function updateParentBridge(
+        string memory key,
+        string memory parentBridgeName,
+        address parentBridgeAddress
+    ) public onlyServiceRole(key) {
+        require(bridgePairs.exist(key), string.concat("Not Found Key ", key));
+
+        BridgePair storage bridgePair = bridgePairs.get(key);
+        bridgePair.parentBridge.name = parentBridgeName;
+        bridgePair.parentBridge.bridgeAddress = parentBridgeAddress;
+        uint256 tokenLength = bridgePair.parentBridge.registeredTokens.length;
+        for (uint256 i = 0; i < tokenLength; i++) {
+            bridgePair.parentBridge.registeredTokens.pop();
+        }
+
+        Token[] memory parentTokens = findRegisteredTokens(parentBridgeAddress);
+        for (uint256 i = 0; i < parentTokens.length; i++) {
+            bridgePair.parentBridge.registeredTokens.push(parentTokens[i]);
+        }
         bridgePairs.set(key, bridgePair);
     }
 
@@ -140,7 +175,7 @@ contract BridgeService is TokenService {
         string memory key,
         address childBridgeAddress,
         Token[] memory tokens
-    ) external {
+    ) external onlyServiceRole(key) {
         BridgePair storage bridgePair = bridgePairs.get(key);
         require(bytes(bridgePair.networkKey).length > 0, "NOT Found Key");
 
@@ -152,5 +187,13 @@ contract BridgeService is TokenService {
         for (uint256 i = 0; i < tokens.length; i++) {
             bridgePair.childBridge.registeredTokens.push(tokens[i]);
         }
+    }
+
+    function getAllBridgePairs() private view returns (BridgePair[] memory) {
+        return bridgePairs.getValues();
+    }
+
+    function getKeys() private view returns (string[] memory) {
+        return bridgePairs.getKeys();
     }
 }

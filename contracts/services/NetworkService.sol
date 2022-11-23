@@ -5,8 +5,9 @@ import "../models/TokenModel.sol";
 import "../models/NetworkModel.sol";
 import "../models/NetworkKeyModel.sol";
 import "../libs/IterableNetworkMap.sol";
+import "./AccessControlService.sol";
 
-contract NetworkService is NetworkKeyModel {
+contract NetworkService is NetworkKeyModel, AccessControlService {
     using IterableNetworkMap for IterableNetworkMap.Map;
     IterableNetworkMap.Map private networks;
     address public owner;
@@ -31,6 +32,9 @@ contract NetworkService is NetworkKeyModel {
         string memory key = getKey(chainId, shortName);
         require(!networks.exist(key), string.concat(key, " already exists"));
 
+        // add Role
+        addNetworkAdminRole(key);
+
         Network memory network;
         network.key = key;
         network.chainId = chainId;
@@ -50,7 +54,8 @@ contract NetworkService is NetworkKeyModel {
         return true;
     }
 
-    function deleteNetwork(string memory key) public {
+    function deleteNetwork(string memory key) public onlyServiceRole(key) {
+        require(networks.exist(key), string.concat("Not Found Key ", key));
         networks.remove(key);
     }
 
@@ -61,21 +66,43 @@ contract NetworkService is NetworkKeyModel {
         string memory name,
         string memory rpcUrl,
         uint256 networkId
-    ) public {
+    ) public onlyServiceRole(key) {
         string memory newKey = getKey(chainId, shortName);
         require(
             StringUtil.stringCompare(key, newKey),
             string.concat(
                 "Not Found, current key ",
                 key,
-                " is dirrent from ",
+                " is differrent from ",
                 newKey
             )
         );
+        require(networks.exist(key), string.concat("Not Found Key ", key));
+
         Network memory network = networks.get(key);
         network.name = name;
         network.rpcUrl = rpcUrl;
         network.networkId = networkId;
+        networks.set(key, network);
+    }
+
+    function updateNetworkActivation(string memory key, bool activated)
+        public
+        onlyServiceRole(key)
+    {
+        require(networks.exist(key), string.concat("Not Found Key ", key));
+        Network memory network = networks.get(key);
+        network.detail.activated = activated;
+        networks.set(key, network);
+    }
+
+    function updateNetworkShowable(string memory key, bool show)
+        public
+        onlyServiceRole(key)
+    {
+        require(networks.exist(key), string.concat("Not Found Key ", key));
+        Network memory network = networks.get(key);
+        network.detail.show = show;
         networks.set(key, network);
     }
 
