@@ -19,9 +19,9 @@ struct BridgePair {
     TokenPair[] tokenPairs;
 }
 
-struct Bridge {
-    string name;
-    address bridgeAddress;
-    bool depth;
-    Token[] registeredTokens;
-}
+// struct Bridge {
+//     string name;
+//     address bridgeAddress;
+//     bool depth;
+//     Token[] registeredTokens;
+// }
